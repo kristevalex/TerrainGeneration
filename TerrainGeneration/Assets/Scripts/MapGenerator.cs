@@ -2,7 +2,7 @@
 
 public class MapGenerator : MonoBehaviour
 {
-    public enum DrawMode {NoiseMap, ColorMap};
+    public enum DrawMode {NoiseMap, ColorMap, Mesh};
     public DrawMode drawMode;
 
     public int mapHeight;
@@ -48,6 +48,8 @@ public class MapGenerator : MonoBehaviour
             mapDisplay.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
         else if (drawMode == DrawMode.ColorMap)
             mapDisplay.DrawTexture(TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
+        else if (drawMode == DrawMode.Mesh)
+            mapDisplay.DrawMesh(MeshGenerator.GenerateTerreinMesh(noiseMap), TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
     }
 
     private void OnValidate()
