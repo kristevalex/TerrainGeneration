@@ -195,7 +195,7 @@ Transform:
   m_GameObject: {fileID: 298448381}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 229, y: 1, z: 107}
+  m_LocalScale: {x: 229, y: 1, z: 88}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -243,15 +243,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85ba631f72257448ac0195744577419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapHeight: 107
+  drawMode: 1
+  mapHeight: 88
   mapWidth: 229
-  noiseScale: 21.8
+  noiseScale: 16.9
   autoUpdate: 1
   octaves: 2
   persistance: 0.25
   lacunarity: 3.28
   seed: -15
-  offset: {x: -17.19, y: 0}
+  offset: {x: -19.5, y: -1.8}
+  regions:
+  - name: WaterDeep
+    height: 0.3
+    color: {r: 0.24390352, g: 0.42304972, b: 0.8207547, a: 1}
+  - name: Water
+    height: 0.4
+    color: {r: 0.34069067, g: 0.45013538, b: 0.8301887, a: 1}
+  - name: Sand
+    height: 0.5
+    color: {r: 0.89487463, g: 0.90588236, b: 0.4392157, a: 1}
+  - name: Land
+    height: 0.6
+    color: {r: 0.44001427, g: 0.9056604, b: 0.54438317, a: 1}
+  - name: Hill
+    height: 0.8
+    color: {r: 0.39044145, g: 0.7735849, b: 0.47737318, a: 1}
+  - name: Mountain
+    height: 0.92
+    color: {r: 0.3584906, g: 0.3500356, b: 0.3517687, a: 1}
+  - name: Snow
+    height: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &328385154
 Transform:
   m_ObjectHideFlags: 0
