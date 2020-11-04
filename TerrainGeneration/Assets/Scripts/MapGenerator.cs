@@ -9,6 +9,8 @@ public class MapGenerator : MonoBehaviour
     public int mapWidth;
     public float noiseScale;
     public bool autoUpdate;
+    public float heightMult;
+    public AnimationCurve animationCurve;
 
     public int octaves;
     [Range(0, 1)]
@@ -49,7 +51,7 @@ public class MapGenerator : MonoBehaviour
         else if (drawMode == DrawMode.ColorMap)
             mapDisplay.DrawTexture(TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
         else if (drawMode == DrawMode.Mesh)
-            mapDisplay.DrawMesh(MeshGenerator.GenerateTerreinMesh(noiseMap), TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
+            mapDisplay.DrawMesh(MeshGenerator.GenerateTerreinMesh(noiseMap, heightMult, animationCurve), TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
     }
 
     private void OnValidate()

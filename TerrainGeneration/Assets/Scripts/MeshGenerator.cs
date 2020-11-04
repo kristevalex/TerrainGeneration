@@ -2,7 +2,7 @@
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerreinMesh(float[,] heightMap)
+    public static MeshData GenerateTerreinMesh(float[,] heightMap, float heightMult, AnimationCurve animationCurve)
     {
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
@@ -16,7 +16,7 @@ public static class MeshGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                meshData.vertices[vertexID] = new Vector3(topLeftX + x, heightMap[x, y], topLeftZ -  y);
+                meshData.vertices[vertexID] = new Vector3(topLeftX + x, animationCurve.Evaluate(heightMap[x, y]) * heightMult, topLeftZ -  y);
                 meshData.uvs[vertexID] = new Vector2(x / (float)width, y / (float)height);
 
                 if (y != height - 1 && x != width - 1)
