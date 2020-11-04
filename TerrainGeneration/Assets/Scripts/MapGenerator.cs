@@ -2,7 +2,7 @@
 
 public class MapGenerator : MonoBehaviour
 {
-    public enum DrawMode {NoiseMap, ColorMap, Mesh};
+    public enum DrawMode {NoiseMap, ColorMap, Mesh, Biomes};
     public DrawMode drawMode;
 
     public int mapHeight;
@@ -17,16 +17,21 @@ public class MapGenerator : MonoBehaviour
     public float persistance;
     public float lacunarity;
 
+    public int biomeGrid;
+    
     public int seed;
     public Vector2 offset;
 
     public TerrainType[] regions;
+    public BiomeType[] biomes;
 
     public void GenerateMap()
     {
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        int[,] biomeMap = Noise.GenerateBiomeMap(mapWidth, mapHeight, seed, biomeGrid, biomes.Length);
 
         Color[] regionsMap = new Color[mapHeight * mapWidth];
+        Color[] biomesColorMap = new Color[mapHeight * mapWidth];
 
         for (int y = 0; y < mapHeight; y++)
         {
@@ -41,6 +46,8 @@ public class MapGenerator : MonoBehaviour
                         break;
                     }
                 }
+
+                biomesColorMap[y * mapWidth + x] = biomes[biomeMap[x, y]].color;
             }
         }
 
@@ -52,6 +59,8 @@ public class MapGenerator : MonoBehaviour
             mapDisplay.DrawTexture(TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
         else if (drawMode == DrawMode.Mesh)
             mapDisplay.DrawMesh(MeshGenerator.GenerateTerreinMesh(noiseMap, heightMult, animationCurve), TextureGenerator.TextureFromColorMap(regionsMap, mapWidth, mapHeight));
+        else if (drawMode == DrawMode.Biomes)
+            mapDisplay.DrawTexture(TextureGenerator.TextureFromColorMap(biomesColorMap, mapWidth, mapHeight));
     }
 
     private void OnValidate()
@@ -64,6 +73,9 @@ public class MapGenerator : MonoBehaviour
         if (lacunarity < 1)
             lacunarity = 1;
 
+        if (biomeGrid < 1)
+            biomeGrid = 1;
+        
         if (octaves < 0)
             octaves = 0;
     }
@@ -74,5 +86,13 @@ public struct TerrainType
 {
     public string name;
     public float height;
+    public Color color;
+}
+
+[System.Serializable]
+public struct BiomeType
+{
+    public string name;
+    public float noiseHeight;
     public Color color;
 }
