@@ -27,10 +27,10 @@ public static class SeedRandom
 
     public static int Get(int x, int y)
     {
-        long ret = x * x + 4 * y + seed + 30925;
+        long ret = x * x + 4 * y + seed + 997;
         ret %= mod;
-        ret *= x;
-        ret += 3 * seed + 17 * y + seed * seed + 12398;
+        ret *= x ^ seed + y ^ seed + 7;
+        ret += 3 * seed + 17 * y + seed * seed + 10007;
         ret %= mod;
 
         return (int)ret;

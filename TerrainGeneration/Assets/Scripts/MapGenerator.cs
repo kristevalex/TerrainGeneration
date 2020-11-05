@@ -18,7 +18,9 @@ public class MapGenerator : MonoBehaviour
     public float lacunarity;
 
     public int biomeGrid;
-    
+    public float noiseMult;
+    public float noiseDist;
+
     public int seed;
     public Vector2 offset;
 
@@ -28,7 +30,7 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
-        int[,] biomeMap = Noise.GenerateBiomeMap(mapWidth, mapHeight, seed, biomeGrid, biomes.Length);
+        int[,] biomeMap = Noise.GenerateBiomeMap(mapWidth, mapHeight, seed, biomeGrid, biomes.Length, noiseMult, noiseDist);
 
         Color[] regionsMap = new Color[mapHeight * mapWidth];
         Color[] biomesColorMap = new Color[mapHeight * mapWidth];
@@ -75,9 +77,18 @@ public class MapGenerator : MonoBehaviour
 
         if (biomeGrid < 1)
             biomeGrid = 1;
-        
+
+        if (noiseMult < 1)
+            noiseMult = 1;
+
+        if (noiseDist < 0.0001f)
+            noiseDist = 0.0001f;
+
         if (octaves < 0)
             octaves = 0;
+
+        if (seed < 1)
+            seed = 1;
     }
 }
 

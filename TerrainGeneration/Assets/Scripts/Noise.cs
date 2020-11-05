@@ -67,7 +67,7 @@ public static class Noise
         return noiseMap;
     }
 
-    public static int[,] GenerateBiomeMap(int mapWidth, int mapHeight, int seed, int biomesGrid, int biomesNum)
+    public static int[,] GenerateBiomeMap(int mapWidth, int mapHeight, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist)
     {
         int[,] biomesMap = new int[mapWidth, mapHeight];
 
@@ -107,11 +107,15 @@ public static class Noise
                         int biomeX = SeedRandom.Get(gridX + i, gridY + j) % biomesGrid; 
                         int biomeY = SeedRandom.Get(gridX + i, gridY + j) % biomesGrid;
 
-                        if (((gridX + i) * biomesGrid + biomeX - x) * ((gridX + i) * biomesGrid + biomeX - x) +
-                            ((gridY + j) * biomesGrid + biomeY - y) * ((gridY + j) * biomesGrid + biomeY - y) < closestDist)
+                        int dist = ((gridX + i) * biomesGrid + biomeX - x) * ((gridX + i) * biomesGrid + biomeX - x) +
+                                   ((gridY + j) * biomesGrid + biomeY - y) * ((gridY + j) * biomesGrid + biomeY - y);
+
+                        dist +=  (int)(Mathf.PerlinNoise(noiseDist * ((gridX + i) * biomesGrid + biomeX - x + offsetX) / 100f,
+                                                         noiseDist * ((gridY + j) * biomesGrid + biomeY - y + offsetY) / 100f) * noiseMult);
+
+                        if (dist < closestDist)
                         {
-                            closestDist = ((gridX + i) * biomesGrid + biomeX - x) * ((gridX + i) * biomesGrid + biomeX - x) +
-                                          ((gridY + j) * biomesGrid + biomeY - y) * ((gridY + j) * biomesGrid + biomeY - y);
+                            closestDist = dist;
                             closest = curBiome;
                         }
                     }
