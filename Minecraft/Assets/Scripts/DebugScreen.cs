@@ -23,9 +23,14 @@ public class DebugScreen : MonoBehaviour
 
     void Update()
     {
+        int biome = Noise.GetBiome((int)(world.player.position.x), (int)(world.player.position.z), world.seed, world.basicBiomeGrid, 
+                                   world.biomes.Length, world.biomeNoiseMult, world.biomeNoiseDist);
+
         text.text = "Alexey Kristev's Minecraft like game\n" +
                     frameRate + " fps\n" +
-                    "XYZ: " + (world.player.position.x - zeroX) + " / " + world.player.position.y + " / " + (world.player.position.z - zeroY) + "\n";
+                    "XYZ: " + ( - zeroX) + " / " + world.player.position.y + " / " + (world.player.position.z - zeroY) + "\n" +
+                    "Biome: " + world.biomes[biome].name + "\n";
+
 
         if (timer > 1f)
         {

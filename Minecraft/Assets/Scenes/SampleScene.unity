@@ -20,8 +20,8 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.86788005, g: 0.87727493, b: 0.9339623, a: 1}
-  m_AmbientEquatorColor: {r: 0.39226595, g: 0.40030262, b: 0.4056604, a: 1}
+  m_AmbientSkyColor: {r: 0.5238964, g: 0.53299797, b: 0.5754717, a: 1}
+  m_AmbientEquatorColor: {r: 0.26971343, g: 0.2722944, b: 0.2735849, a: 1}
   m_AmbientGroundColor: {r: 0.18867922, g: 0.17354928, b: 0.1432894, a: 1}
   m_AmbientIntensity: 2.45
   m_AmbientMode: 1
@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 1
+  m_ReflectionIntensity: 0.823
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 0.823}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -150,7 +150,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.61
+  m_Intensity: 1.46
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -571,6 +571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f4f3917982095418dba5ac525e3281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 40
   player: {fileID: 1773788783}
   debugScreen: {fileID: 446049797}
   material: {fileID: 2100000, guid: 1f66b532d3cbd6049aa47fff2f48860a, type: 2}
@@ -623,57 +624,9 @@ MonoBehaviour:
     buttomFace: 10
     leftFace: 10
     rightFace: 10
-  seed: 37
-  biome:
-    name: Plains
-    scale: 100
-    octaves: 3
-    persistance: 0.3
-    lacunarity: 3.1
-    heightCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 30
-        inSlope: 6.6666665
-        outSlope: 6.6666665
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.3
-        value: 32
-        inSlope: 13.1036
-        outSlope: 13.1036
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.15904291
-      - serializedVersion: 3
-        time: 0.84610134
-        value: 48.966854
-        inSlope: 48.92643
-        outSlope: 48.92643
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 60
-        inSlope: 71.69098
-        outSlope: 71.69098
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    topBlock: 3
-    topLayer: 4
+  basicBiomeGrid: 70
+  biomeNoiseMult: 3000
+  biomeNoiseDist: 3
   biomes:
   - name: Plains
     scale: 100

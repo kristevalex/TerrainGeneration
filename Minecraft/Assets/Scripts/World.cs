@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
+    [SerializeField]
+    public int seed;
+
     [Header("Thecnical")]
     public Transform player;
     [SerializeField]
@@ -21,8 +24,9 @@ public class World : MonoBehaviour
     [Space(10)]
 
     [Header("Biomes")]
-    [SerializeField]
-    public int seed;
+    public int basicBiomeGrid;
+    public float biomeNoiseMult;
+    public float biomeNoiseDist;
 
     public BiomeType[] biomes;
 
@@ -35,7 +39,8 @@ public class World : MonoBehaviour
     {
         isCreatingChuncks = false;
 
-        int biome = 1;
+        int biome = Noise.GetBiome((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
+                                   seed, basicBiomeGrid, biomes.Length, biomeNoiseMult, biomeNoiseDist);
 
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
                                     Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
@@ -101,12 +106,13 @@ public class World : MonoBehaviour
         return blockTypes[GetVoxel(pos)].isSolid;
     }
 
-    public byte GetVoxel(Vector3 pos, int height = -1) 
+    public byte GetVoxel(Vector3 pos, int height = -1, int biome = -1) 
     {
         if (!IsVoxelInWorld(pos))
             return 0;
 
-        int biome = 1;
+        if(biome == -1)
+            biome = Noise.GetBiome((int)(pos.x), (int)(pos.z), seed, basicBiomeGrid, biomes.Length, biomeNoiseMult, biomeNoiseDist);
 
         if (height == -1)
             height = Noise.GenerateHeight((int)pos.x, (int)pos.z, biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity);
