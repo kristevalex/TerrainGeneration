@@ -10,11 +10,24 @@ public class World : MonoBehaviour
     public Material material;
     public BlockType[] blockTypes;
 
+    [SerializeField]
+    int seed;
+    [SerializeField]
+    float scale;
+    [SerializeField]
+    int octaves;
+    [SerializeField]
+    float persistance;
+    [SerializeField]
+    float lacunarity;
+
     Chunk[,] chunks = new Chunk[VoxelData.worldSizeInChunks, VoxelData.worldSizeInChunks];
 
     private void Start()
     {
-        spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, VoxelData.chunkHeight + 2, VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
+        spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
+                                    Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), 10, 30, seed, scale, octaves, persistance, lacunarity) + 2, 
+                                    VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
         
         GenerateWorld();
     }
@@ -51,11 +64,15 @@ public class World : MonoBehaviour
         if (!IsVoxelInWorld(pos))
             return 0;
 
+        int height = Noise.GenerateHeight((int)pos.x, (int)pos.z, 10, 30, seed, scale, octaves, persistance, lacunarity);
+
         if (pos.y == 0)
             return Blocks.bedrock;
-        else if (pos.y == VoxelData.chunkHeight - 1)
+        else if (pos.y > height)
+            return Blocks.air;
+        else if (pos.y == height)
             return Blocks.grass;
-        else if (pos.y >= VoxelData.chunkHeight - 4)
+        else if (pos.y >= height - 3)
             return Blocks.dirt;
         else
             return Blocks.stone;

@@ -285,6 +285,11 @@ MonoBehaviour:
     buttomFace: 1
     leftFace: 1
     rightFace: 1
+  seed: 37
+  scale: 100
+  octaves: 3
+  persistance: 0.3
+  lacunarity: 3.1
 --- !u!4 &475395641
 Transform:
   m_ObjectHideFlags: 0

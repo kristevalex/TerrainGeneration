@@ -112,6 +112,9 @@ public class Chunk
 
     void AddVoxelDataToChunck(Vector3 pos)
     {
+        if (!world.blockTypes[blocks[(int)pos.x, (int)pos.z, (int)pos.y]].isSolid)
+            return;
+
         for (int i = 0; i < VoxelData.voxelTris.GetLength(0); i++)
         {
             if (!CheckBlock(pos + VoxelData.faceChecks[i]))
