@@ -627,10 +627,11 @@ MonoBehaviour:
   basicBiomeGrid: 70
   biomeNoiseMult: 3000
   biomeNoiseDist: 3
+  smoothnessMod: 3000
   biomes:
   - name: Plains
     scale: 100
-    octaves: 3
+    octaves: 2
     persistance: 0.3
     lacunarity: 3.1
     heightCurve:
@@ -639,35 +640,187 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0
         value: 30
-        inSlope: 9.9683695
-        outSlope: 9.9683695
+        inSlope: 3.0086546
+        outSlope: 3.0086546
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.32881755
-        value: 33.277775
-        inSlope: 18.141455
-        outSlope: 18.141455
+        time: 0.33867472
+        value: 31.018955
+        inSlope: 6.173362
+        outSlope: 6.173362
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.3536118
-        outWeight: 0.14389825
+        outWeight: 0.25386387
       - serializedVersion: 3
-        time: 0.85165805
-        value: 54.221535
-        inSlope: 59.312466
-        outSlope: 59.312466
+        time: 0.7995194
+        value: 41.114372
+        inSlope: 55.723747
+        outSlope: 55.723747
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.26043662
+        outWeight: 0.39607295
+      - serializedVersion: 3
+        time: 0.8898337
+        value: 46.49284
+        inSlope: 118.572136
+        outSlope: 118.572136
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.38001192
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9473679
+        value: 50.436974
+        inSlope: 1.0869939
+        outSlope: 1.0869939
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 1
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1.0272
+        value: 50.861332
+        inSlope: 5.007238
+        outSlope: 5.007238
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 1
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 3
+    topLayer: 4
+  - name: Stone Mountains
+    scale: 70
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 35
+        inSlope: 10.004241
+        outSlope: 10.004241
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.17610253
+        value: 36.761772
+        inSlope: 6.024322
+        outSlope: 6.024322
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.46605194
+        outWeight: 0.16590022
+      - serializedVersion: 3
+        time: 0.37491277
+        value: 49.32043
+        inSlope: 117.740746
+        outSlope: 117.740746
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.15751812
+      - serializedVersion: 3
+        time: 0.52219945
+        value: 73.5636
+        inSlope: 128.93106
+        outSlope: 128.93106
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.6915795
+        value: 90.04506
+        inSlope: 24.434845
+        outSlope: 24.434845
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.22841036
+        outWeight: 0.2935915
       - serializedVersion: 3
         time: 1
-        value: 60
-        inSlope: 38.953682
-        outSlope: 38.953682
+        value: 100
+        inSlope: 32.277172
+        outSlope: 32.277172
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 2
+    topLayer: 2
+  - name: Mountains
+    scale: 70
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 35
+        inSlope: 10.795271
+        outSlope: 10.795271
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.20489587
+        value: 37.211906
+        inSlope: 6.024322
+        outSlope: 6.024322
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.46605194
+        outWeight: 0.16590022
+      - serializedVersion: 3
+        time: 0.37491277
+        value: 49.32043
+        inSlope: 117.740746
+        outSlope: 117.740746
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.15751812
+      - serializedVersion: 3
+        time: 0.52219945
+        value: 73.5636
+        inSlope: 128.93106
+        outSlope: 128.93106
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.6915795
+        value: 90.04506
+        inSlope: 24.434845
+        outSlope: 24.434845
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.22841036
+        outWeight: 0.2935915
+      - serializedVersion: 3
+        time: 1
+        value: 100
+        inSlope: 32.277172
+        outSlope: 32.277172
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -676,7 +829,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 0
     topBlock: 3
-    topLayer: 4
+    topLayer: 2
   - name: Desert
     scale: 100
     octaves: 3
@@ -688,24 +841,24 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0
         value: 30
-        inSlope: 9.9683695
-        outSlope: 9.9683695
+        inSlope: 5.1681347
+        outSlope: 5.1681347
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.32881755
-        value: 33.277775
-        inSlope: 18.141455
-        outSlope: 18.141455
+        time: 0.33374116
+        value: 31.72482
+        inSlope: 15.215829
+        outSlope: 15.215829
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.3536118
-        outWeight: 0.14389825
+        outWeight: 0.3008467
       - serializedVersion: 3
-        time: 0.85165805
-        value: 54.221535
+        time: 0.6718485
+        value: 44.76271
         inSlope: 59.312466
         outSlope: 59.312466
         tangentMode: 0
@@ -714,9 +867,9 @@ MonoBehaviour:
         outWeight: 0.38001192
       - serializedVersion: 3
         time: 1
-        value: 60
-        inSlope: 38.953682
-        outSlope: 38.953682
+        value: 50
+        inSlope: 15.959973
+        outSlope: 15.959973
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334

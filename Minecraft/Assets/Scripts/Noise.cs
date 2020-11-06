@@ -45,6 +45,23 @@ public static class Noise
         return Mathf.FloorToInt(heightCurve.Evaluate(noiseHeight / maxValue));
     }
 
+    public static int GetWeight(int x, int y, World world)
+    {
+        float ans = 0;
+        float[] biomeWeights = GetBiomes(x, y, world.seed, world.basicBiomeGrid, world.biomes.Length, world.biomeNoiseMult, world.biomeNoiseDist);
+
+        for (int i = 0; i < biomeWeights.Length; i++)
+        {
+            if (biomeWeights[i] < 0.0001f)
+                continue;
+
+            BiomeType bm = world.biomes[i];
+            ans += biomeWeights[i] * GenerateHeight(x, y, bm.heightCurve, world.seed, bm.scale, bm.octaves, bm.persistance, bm.lacunarity);
+        }
+
+        return Mathf.RoundToInt(ans);
+    }
+
     public static int GetBiome(int x, int y, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist)
     {
         System.Random prng = new System.Random(seed);
@@ -53,7 +70,7 @@ public static class Noise
         float offsetX = prng.Next(-10000, 10000);
         float offsetY = prng.Next(-10000, 10000);
 
-       
+
         int gridX = (int)Mathf.Floor(x / biomesGrid);
         int gridY = (int)Mathf.Floor(y / biomesGrid);
 
@@ -82,7 +99,7 @@ public static class Noise
 
                 dist += (int)(Mathf.PerlinNoise(noiseDist * ((gridX + i) * biomesGrid + biomeX - x + offsetX) / 100f,
                                                 noiseDist * ((gridY + j) * biomesGrid + biomeY - y + offsetY) / 100f) * noiseMult);
-                
+
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -94,6 +111,78 @@ public static class Noise
 
         return SeedRandom.Get(gridX + closest / 4, gridY + closest % 4) % biomesNum;
     }
+
+    public static float[] GetBiomes(int x, int y, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist, bool debug = false)
+    {
+        System.Random prng = new System.Random(seed);
+        SeedRandom.SetSeed(seed);
+
+        float offsetX = prng.Next(-10000, 10000);
+        float offsetY = prng.Next(-10000, 10000);
+
+
+        int gridX = (int)Mathf.Floor(x / biomesGrid);
+        int gridY = (int)Mathf.Floor(y / biomesGrid);
+
+        if (x / biomesGrid - gridX > 0.5f)
+            gridX -= 2;
+        else
+            gridX -= 1;
+
+        if (y / biomesGrid - gridY > 0.5f)
+            gridY -= 2;
+        else
+            gridY -= 1;
+
+        float closestDist = float.MaxValue;
+
+        float[] dists = new float[16];
+        
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                int curBiome = i * 4 + j;
+                int biomeX = SeedRandom.Get(gridX + i, gridY + j) % biomesGrid;
+                int biomeY = SeedRandom.Get(gridX + i, gridY + j) % biomesGrid;
+
+                float dist = ((gridX + i) * biomesGrid + biomeX - x) * ((gridX + i) * biomesGrid + biomeX - x) +
+                             ((gridY + j) * biomesGrid + biomeY - y) * ((gridY + j) * biomesGrid + biomeY - y);
+
+                dist += (Mathf.PerlinNoise(noiseDist * ((gridX + i) * biomesGrid + biomeX - x + offsetX) / 100f,
+                                           noiseDist * ((gridY + j) * biomesGrid + biomeY - y + offsetY) / 100f) * noiseMult);
+
+                dists[curBiome] = dist;
+                
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                }
+            }
+        }
+
+        float total = 0;
+        for (int i = 0; i < 16; i++)
+        {
+            if (dists[i] - closestDist < VoxelData.smoothnessMod)
+            {
+                total += (VoxelData.smoothnessMod - dists[i] + closestDist) * (VoxelData.smoothnessMod - dists[i] + closestDist);
+            }
+        }
+
+        float[] biomeWeights = new float[biomesNum];
+
+
+
+        for (int i = 0; i < 16; i++)
+        {
+            if (dists[i] - closestDist < VoxelData.smoothnessMod)
+            {
+                biomeWeights[SeedRandom.Get(gridX + i / 4, gridY + i % 4) % biomesNum] += 1.0f * (VoxelData.smoothnessMod + closestDist - dists[i]) * 
+                                                                                                 (VoxelData.smoothnessMod + closestDist - dists[i]) / total;
+            }
+        }
+
+        return biomeWeights;
+    }
 }
-
-

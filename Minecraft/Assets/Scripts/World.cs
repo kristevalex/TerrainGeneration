@@ -27,6 +27,8 @@ public class World : MonoBehaviour
     public int basicBiomeGrid;
     public float biomeNoiseMult;
     public float biomeNoiseDist;
+    [SerializeField]
+    private float smoothnessMod;
 
     public BiomeType[] biomes;
 
@@ -37,14 +39,15 @@ public class World : MonoBehaviour
 
     private void Start()
     {
+        VoxelData.smoothnessMod = smoothnessMod;
+
         isCreatingChuncks = false;
 
         int biome = Noise.GetBiome((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
                                    seed, basicBiomeGrid, biomes.Length, biomeNoiseMult, biomeNoiseDist);
 
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
-                                    Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
-                                    biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity) + 2, 
+                                    Noise.GetWeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), this) + 2, 
                                     VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
         
         GenerateWorld();
@@ -111,11 +114,11 @@ public class World : MonoBehaviour
         if (!IsVoxelInWorld(pos))
             return 0;
 
-        if(biome == -1)
+        if (biome == -1)
             biome = Noise.GetBiome((int)(pos.x), (int)(pos.z), seed, basicBiomeGrid, biomes.Length, biomeNoiseMult, biomeNoiseDist);
 
         if (height == -1)
-            height = Noise.GenerateHeight((int)pos.x, (int)pos.z, biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity);
+            height = Noise.GetWeight((int)pos.x, (int)pos.z, this); // GenerateHeight((int)pos.x, (int)pos.z, biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity);
 
         if (pos.y == 0)
             return Blocks.bedrock;
