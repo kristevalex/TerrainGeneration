@@ -615,6 +615,14 @@ MonoBehaviour:
     buttomFace: 1
     leftFace: 1
     rightFace: 1
+  - name: Sand
+    isSolid: 1
+    backFace: 10
+    frontFace: 10
+    topFace: 10
+    buttomFace: 10
+    leftFace: 10
+    rightFace: 10
   seed: 37
   biome:
     name: Plains
@@ -666,6 +674,105 @@ MonoBehaviour:
       m_RotationOrder: 4
     topBlock: 3
     topLayer: 4
+  biomes:
+  - name: Plains
+    scale: 100
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 30
+        inSlope: 9.9683695
+        outSlope: 9.9683695
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.32881755
+        value: 33.277775
+        inSlope: 18.141455
+        outSlope: 18.141455
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.3536118
+        outWeight: 0.14389825
+      - serializedVersion: 3
+        time: 0.85165805
+        value: 54.221535
+        inSlope: 59.312466
+        outSlope: 59.312466
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.38001192
+      - serializedVersion: 3
+        time: 1
+        value: 60
+        inSlope: 38.953682
+        outSlope: 38.953682
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 3
+    topLayer: 4
+  - name: Desert
+    scale: 100
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 30
+        inSlope: 9.9683695
+        outSlope: 9.9683695
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.32881755
+        value: 33.277775
+        inSlope: 18.141455
+        outSlope: 18.141455
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.3536118
+        outWeight: 0.14389825
+      - serializedVersion: 3
+        time: 0.85165805
+        value: 54.221535
+        inSlope: 59.312466
+        outSlope: 59.312466
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.38001192
+      - serializedVersion: 3
+        time: 1
+        value: 60
+        inSlope: 38.953682
+        outSlope: 38.953682
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 5
+    topLayer: 5
 --- !u!4 &475395641
 Transform:
   m_ObjectHideFlags: 0

@@ -73,7 +73,9 @@ public class Chunk
             {
                 for (int i = 0; i < VoxelData.chunkHeight; i++)
                 {
-                    int height = Noise.GenerateHeight((int)(Position.x + x), (int)(Position.z + y), world.biome.heightCurve, world.seed, world.biome.scale, world.biome.octaves, world.biome.persistance, world.biome.lacunarity);
+                    int biome = 0;
+
+                    int height = Noise.GenerateHeight((int)(Position.x + x), (int)(Position.z + y), world.biomes[biome].heightCurve, world.seed, world.biomes[biome].scale, world.biomes[biome].octaves, world.biomes[biome].persistance, world.biomes[biome].lacunarity);
                     blocks[x, y, i] = world.GetVoxel(Position + new Vector3(x, i, y), height);
                 }
             }

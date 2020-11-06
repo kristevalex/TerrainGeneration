@@ -24,7 +24,7 @@ public class World : MonoBehaviour
     [SerializeField]
     public int seed;
 
-    public BiomeType biome;
+    public BiomeType[] biomes;
 
     Chunk[,] chunks = new Chunk[VoxelData.worldSizeInChunks, VoxelData.worldSizeInChunks];
 
@@ -35,9 +35,11 @@ public class World : MonoBehaviour
     {
         isCreatingChuncks = false;
 
+        int biome = 1;
+
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
                                     Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
-                                    biome.heightCurve, seed, biome.scale, biome.octaves, biome.persistance, biome.lacunarity) + 2, 
+                                    biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity) + 2, 
                                     VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
         
         GenerateWorld();
@@ -104,17 +106,19 @@ public class World : MonoBehaviour
         if (!IsVoxelInWorld(pos))
             return 0;
 
+        int biome = 1;
+
         if (height == -1)
-            height = Noise.GenerateHeight((int)pos.x, (int)pos.z, biome.heightCurve, seed, biome.scale, biome.octaves, biome.persistance, biome.lacunarity);
+            height = Noise.GenerateHeight((int)pos.x, (int)pos.z, biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity);
 
         if (pos.y == 0)
             return Blocks.bedrock;
         else if (pos.y > height)
             return Blocks.air;
         else if (pos.y == height)
-            return biome.topBlock;
+            return biomes[biome].topBlock;
         else if (pos.y >= height - 3)
-            return biome.topLayer;
+            return biomes[biome].topLayer;
         else
             return Blocks.stone;
     }
