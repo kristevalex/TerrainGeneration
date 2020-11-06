@@ -27,7 +27,7 @@ public class World : MonoBehaviour
     private void Start()
     {
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
-                                    Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), 10, 30, seed, scale, octaves, persistance, lacunarity) + 2, 
+                                    Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), 10, 60, seed, scale, octaves, persistance, lacunarity) + 2, 
                                     VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
         
         GenerateWorld();
@@ -65,7 +65,7 @@ public class World : MonoBehaviour
         if (!IsVoxelInWorld(pos))
             return 0;
 
-        int height = Noise.GenerateHeight((int)pos.x, (int)pos.z, 10, 30, seed, scale, octaves, persistance, lacunarity);
+        int height = Noise.GenerateHeight((int)pos.x, (int)pos.z, 10, 60, seed, scale, octaves, persistance, lacunarity);
 
         if (pos.y == 0)
             return Blocks.bedrock;

@@ -2,11 +2,11 @@
 
 public static class VoxelData
 {
-    public static readonly int chunkSize = 8;
-    public static readonly int chunkHeight = 40;
+    public static readonly int chunkSize = 16;
+    public static readonly int chunkHeight = 100;
     public static readonly int worldSizeInChunks = 100;
 
-    public static readonly int viewDistInChuncks = 7;
+    public static readonly int viewDistInChuncks = 5;
 
     public static int worldSizeInVoxels
     {
