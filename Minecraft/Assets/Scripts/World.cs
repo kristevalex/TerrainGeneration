@@ -1,33 +1,43 @@
-﻿using UnityEngine;
-using UnityStandardAssets.Characters.FirstPerson;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class World : MonoBehaviour
 {
+    [Header("Thecnical")]
+    public Transform player;
     [SerializeField]
-    private Transform player;
+    private GameObject debugScreen;
     Vector3 playerPrevUpdate;
     Vector3 spawnPosition;
     
     public Material material;
+
+    [Space(10)]
+
+    [Header("Blocks")]
     public BlockType[] blockTypes;
 
+    [Space(10)]
+
+    [Header("Biomes")]
     [SerializeField]
-    int seed;
-    [SerializeField]
-    float scale;
-    [SerializeField]
-    int octaves;
-    [SerializeField]
-    float persistance;
-    [SerializeField]
-    float lacunarity;
+    public int seed;
+
+    public BiomeType biome;
 
     Chunk[,] chunks = new Chunk[VoxelData.worldSizeInChunks, VoxelData.worldSizeInChunks];
 
+    List<ChunkCoord> chuncksToCreate = new List<ChunkCoord>();
+    bool isCreatingChuncks;
+
     private void Start()
     {
+        isCreatingChuncks = false;
+
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
-                                    Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), 10, 60, seed, scale, octaves, persistance, lacunarity) + 2, 
+                                    Noise.GenerateHeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
+                                    biome.heightCurve, seed, biome.scale, biome.octaves, biome.persistance, biome.lacunarity) + 2, 
                                     VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
         
         GenerateWorld();
@@ -39,6 +49,27 @@ public class World : MonoBehaviour
             CheckDistance();
 
         playerPrevUpdate = player.position;
+
+        if (chuncksToCreate.Count > 0 && !isCreatingChuncks)
+            StartCoroutine("CreateChuncks");
+
+        if (Input.GetKeyDown(KeyCode.F3))
+            debugScreen.SetActive(!debugScreen.activeSelf);
+    }
+
+    IEnumerator CreateChuncks()
+    {
+        isCreatingChuncks = true;
+
+        while (chuncksToCreate.Count > 0)
+        {
+            chunks[chuncksToCreate[0].x, chuncksToCreate[0].y].Init();
+            chuncksToCreate.RemoveAt(0);
+
+            yield return null;
+        }
+
+        isCreatingChuncks = false;
     }
 
     void GenerateWorld()
@@ -47,7 +78,7 @@ public class World : MonoBehaviour
         {
             for (int y = VoxelData.worldSizeInChunks / 2 - VoxelData.viewDistInChuncks; y < VoxelData.worldSizeInChunks / 2 + VoxelData.viewDistInChuncks; y++)
             {
-                GenrateChunck(x, y);
+                chunks[x, y] = new Chunk(new ChunkCoord(x, y), this, true);
             }
         }
 
@@ -55,26 +86,35 @@ public class World : MonoBehaviour
         Physics.SyncTransforms();
     }
 
-    void GenrateChunck(int x, int y)
+    public bool CheckForVoxel(Vector3 pos)
     {
-        chunks[x, y] = new Chunk(new ChunkCoord(x, y), this);
+        if (!IsVoxelInWorld(pos))
+            return false;
+
+        ChunkCoord voxelChunck = new ChunkCoord(pos);
+
+        if (chunks[voxelChunck.x, voxelChunck.y] != null && chunks[voxelChunck.x, voxelChunck.y].isPopulated)
+            return blockTypes[chunks[voxelChunck.x, voxelChunck.y].GetVoxelFromGlobalVector(pos)].isSolid;
+
+        return blockTypes[GetVoxel(pos)].isSolid;
     }
 
-    public byte GetVoxel(Vector3 pos)
+    public byte GetVoxel(Vector3 pos, int height = -1) 
     {
         if (!IsVoxelInWorld(pos))
             return 0;
 
-        int height = Noise.GenerateHeight((int)pos.x, (int)pos.z, 10, 60, seed, scale, octaves, persistance, lacunarity);
+        if (height == -1)
+            height = Noise.GenerateHeight((int)pos.x, (int)pos.z, biome.heightCurve, seed, biome.scale, biome.octaves, biome.persistance, biome.lacunarity);
 
         if (pos.y == 0)
             return Blocks.bedrock;
         else if (pos.y > height)
             return Blocks.air;
         else if (pos.y == height)
-            return Blocks.grass;
+            return biome.topBlock;
         else if (pos.y >= height - 3)
-            return Blocks.dirt;
+            return biome.topLayer;
         else
             return Blocks.stone;
     }
@@ -122,7 +162,10 @@ public class World : MonoBehaviour
                 if (IsChunkInWorld(new ChunkCoord(x, y)))
                 {
                     if (chunks[x, y] == null)
-                        GenrateChunck(x, y);
+                    {
+                        chunks[x, y] = new Chunk(new ChunkCoord(x, y), this, false);
+                        chuncksToCreate.Add(new ChunkCoord(x, y));
+                    }
                     else if (chunks[x, y].IsActive == false)
                         chunks[x, y].IsActive = true;
                 }
@@ -185,4 +228,17 @@ public struct BlockType
                 return 0;
         }
     }
+}
+
+[System.Serializable]
+public struct BiomeType
+{
+    public string name;
+    public float scale;
+    public int octaves;
+    public float persistance;
+    public float lacunarity;
+    public AnimationCurve heightCurve;
+    public byte topBlock;
+    public byte topLayer;
 }

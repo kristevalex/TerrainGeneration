@@ -28,12 +28,23 @@ public class Chunk
     List<int> triangles = new List<int>();
     List<Vector2> uvs = new List<Vector2>();
 
+    private bool _isActive;
+    public bool isPopulated = false;
+
     byte[,,] blocks = new byte[VoxelData.chunkSize, VoxelData.chunkSize, VoxelData.chunkHeight];
 
-    public Chunk(ChunkCoord _coord, World _world)
+    public Chunk(ChunkCoord _coord, World _world, bool generateOnLoad)
     {
+        IsActive = true;
         coord = _coord;
         world = _world;
+
+        if(generateOnLoad)
+            Init();
+    }
+
+    public void Init()
+    {
         chunkObject = new GameObject();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
@@ -49,20 +60,26 @@ public class Chunk
         CreateMesh();
 
         meshCollider.sharedMesh = meshFilter.mesh;
+
+        if (!_isActive)
+            chunkObject.SetActive(false);
     }
 
     void GenerateBlocks()
-    {
-        for (int i = 0; i < VoxelData.chunkHeight; i++)
+    {        
+        for (int x = 0; x < VoxelData.chunkSize; x++)
         {
-            for (int x = 0; x < VoxelData.chunkSize; x++)
+            for (int y = 0; y < VoxelData.chunkSize; y++)
             {
-                for (int y = 0; y < VoxelData.chunkSize; y++)
+                for (int i = 0; i < VoxelData.chunkHeight; i++)
                 {
-                    blocks[x, y, i] = world.GetVoxel(Position + new Vector3(x, i, y));
+                    int height = Noise.GenerateHeight((int)(Position.x + x), (int)(Position.z + y), world.biome.heightCurve, world.seed, world.biome.scale, world.biome.octaves, world.biome.persistance, world.biome.lacunarity);
+                    blocks[x, y, i] = world.GetVoxel(Position + new Vector3(x, i, y), height);
                 }
             }
         }
+
+        isPopulated = true;
     }
 
     void CreateMeshData()
@@ -98,15 +115,31 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.y);
 
         if (!IsBlockInChunck(x, y, z))
-            return world.blockTypes[world.GetVoxel(pos + Position)].isSolid;
+            return world.CheckForVoxel(pos + Position);
 
         return world.blockTypes[blocks[x, y, z]].isSolid;
     }
 
+    public byte GetVoxelFromGlobalVector(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.z);
+        int zCheck = Mathf.FloorToInt(pos.y);
+
+        xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
+
+        return blocks[xCheck, yCheck, zCheck];
+    }
+
     public bool IsActive
     {
-        get { return chunkObject.activeSelf; }
-        set { chunkObject.SetActive(value); }
+        get { return _isActive; }
+        set {
+            _isActive = value;
+            if(chunkObject != null)
+                chunkObject.SetActive(value); 
+            }
     }
 
     public Vector3 Position
@@ -179,6 +212,18 @@ public class ChunkCoord
     {
         x = _x;
         y = _y;
+    }
+
+    public ChunkCoord()
+    {
+        x = 0;
+        y = 0;
+    }
+
+    public ChunkCoord(Vector3 pos)
+    {
+        x = Mathf.FloorToInt(pos.x) / VoxelData.chunkSize;
+        y = Mathf.FloorToInt(pos.z) / VoxelData.chunkSize;
     }
 
     public static bool operator ==(ChunkCoord ft, ChunkCoord sd)

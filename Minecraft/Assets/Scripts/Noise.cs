@@ -2,7 +2,7 @@
 
 public static class Noise
 {
-    public static int GenerateHeight(int x, int y, int minHeight, int maxHeight, int seed, float scale, int octaves, float persistance, float lacunarity)
+    public static int GenerateHeight(int x, int y, AnimationCurve heightCurve, int seed, float scale, int octaves, float persistance, float lacunarity)
     {
         System.Random prng = new System.Random(seed);
 
@@ -34,7 +34,7 @@ public static class Noise
             float sampleX = (x + offsetXg) / scale * frequency + octaveOffsets[i].x;
             float sampleY = (y + offsetYg) / scale * frequency + octaveOffsets[i].y;
 
-            float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2;
+            float perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
             noiseHeight += perlinValue * amplitude;
 
             amplitude *= persistance;
@@ -42,7 +42,7 @@ public static class Noise
         }
 
 
-        return Mathf.FloorToInt(noiseHeight / maxValue * (maxHeight - minHeight) + minHeight);
+        return Mathf.FloorToInt(heightCurve.Evaluate(noiseHeight / maxValue));
     }
 
     public static int[,] GenerateBiomeMap(int mapWidth, int mapHeight, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist)
