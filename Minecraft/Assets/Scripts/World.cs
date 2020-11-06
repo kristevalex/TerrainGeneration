@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
-using UnityEngine.XR.WSA.Input;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class World : MonoBehaviour
 {
-    public Transform player;
+    [SerializeField]
+    private Transform player;
     Vector3 playerPrevUpdate;
     Vector3 spawnPosition;
-
+    
     public Material material;
     public BlockType[] blockTypes;
 
@@ -51,7 +52,7 @@ public class World : MonoBehaviour
         }
 
         player.position = spawnPosition;
-        playerPrevUpdate = spawnPosition;
+        Physics.SyncTransforms();
     }
 
     void GenrateChunck(int x, int y)

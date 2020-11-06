@@ -17,6 +17,7 @@ public class Chunk
     GameObject chunkObject;
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
+    MeshCollider meshCollider;
     ChunkCoord coord;
 
     World world;
@@ -36,6 +37,7 @@ public class Chunk
         chunkObject = new GameObject();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
+        meshCollider = chunkObject.AddComponent<MeshCollider>();
 
         meshRenderer.material = world.material;
         chunkObject.transform.SetParent(world.transform);
@@ -45,6 +47,8 @@ public class Chunk
         GenerateBlocks();
         CreateMeshData();
         CreateMesh();
+
+        meshCollider.sharedMesh = meshFilter.mesh;
     }
 
     void GenerateBlocks()
