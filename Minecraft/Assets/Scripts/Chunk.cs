@@ -26,6 +26,8 @@ public class Chunk
 
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
+    List<int> transparentTriangles = new List<int>();
+    Material[] materials = new Material[2];
     List<Vector2> uvs = new List<Vector2>();
 
     private bool _isActive;
@@ -50,7 +52,10 @@ public class Chunk
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
         meshCollider = chunkObject.AddComponent<MeshCollider>();
 
-        meshRenderer.material = world.material;
+        materials[0] = world.material;
+        materials[1] = world.transparentMaterial;
+        meshRenderer.materials = materials;
+
         chunkObject.transform.SetParent(world.transform);
         chunkObject.transform.position = new Vector3(coord.x * VoxelData.chunkSize, 0.0f, coord.y * VoxelData.chunkSize);
         chunkObject.name = "Chunk (" + coord.x + ", " + coord.y + ")";
@@ -73,7 +78,7 @@ public class Chunk
             {
                 int biome = Noise.GetBiome((int)(Position.x + x), (int)(Position.z + y), world.seed, world.basicBiomeGrid, world.biomes, world.biomeNoiseMult, world.biomeNoiseDist);
 
-                int height = Noise.GetWeight((int)(Position.x + x), (int)(Position.z + y), world); //GenerateHeight((int)(Position.x + x), (int)(Position.z + y), world.biomes[biome].heightCurve, world.seed, world.biomes[biome].scale, world.biomes[biome].octaves, world.biomes[biome].persistance, world.biomes[biome].lacunarity);
+                int height = Noise.GetWeight((int)(Position.x + x), (int)(Position.z + y), world); 
                 
                 for (int i = 0; i < VoxelData.chunkHeight; i++)
                 {
@@ -118,9 +123,9 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.y);
 
         if (!IsBlockInChunck(x, y, z))
-            return world.CheckForVoxel(pos + Position);
+            return world.CheckForVoxelTrancparency(pos + Position);
 
-        return world.blockTypes[blocks[x, y, z]].isSolid;
+        return world.blockTypes[blocks[x, y, z]].isTransparent;
     }
 
     public byte GetVoxelFromGlobalVector(Vector3 pos)
@@ -155,24 +160,41 @@ public class Chunk
         if (!world.blockTypes[blocks[(int)pos.x, (int)pos.z, (int)pos.y]].isSolid)
             return;
 
+        byte blockId = blocks[(int)pos.x, (int)pos.z, (int)pos.y];
+        bool isTransparent = world.blockTypes[blockId].isTransparent;
+
+
         for (int i = 0; i < VoxelData.voxelTris.GetLength(0); i++)
         {
-            if (!CheckBlock(pos + VoxelData.faceChecks[i]))
+            if (CheckBlock(pos + VoxelData.faceChecks[i]))
             {
                 for (int j = 0; j < VoxelData.voxelTris.GetLength(1); j++)
                 {
                     vertices.Add(pos + VoxelData.voxeVerts[VoxelData.voxelTris[i, j]]);
                 }
 
-                AddTexture(world.blockTypes[blocks[(int)pos.x, (int)pos.z, (int)pos.y]].GetTextureId(i));
+                AddTexture(world.blockTypes[blockId].GetTextureId(i));
 
-                triangles.Add(vertexId++);
-                triangles.Add(vertexId++);
-                triangles.Add(vertexId);
-                triangles.Add(vertexId--);
-                triangles.Add(vertexId++);
-                triangles.Add(++vertexId);
-                ++vertexId;
+                if (!isTransparent)
+                {
+                    triangles.Add(vertexId++);
+                    triangles.Add(vertexId++);
+                    triangles.Add(vertexId);
+                    triangles.Add(vertexId--);
+                    triangles.Add(vertexId++);
+                    triangles.Add(++vertexId);
+                    ++vertexId;
+                }
+                else
+                {
+                    transparentTriangles.Add(vertexId++);
+                    transparentTriangles.Add(vertexId++);
+                    transparentTriangles.Add(vertexId);
+                    transparentTriangles.Add(vertexId--);
+                    transparentTriangles.Add(vertexId++);
+                    transparentTriangles.Add(++vertexId);
+                    ++vertexId;
+                }
             }
         }
     }
@@ -181,7 +203,11 @@ public class Chunk
     {
         Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+
+        mesh.subMeshCount = 2;
+        mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.SetTriangles(transparentTriangles.ToArray(), 1);
+
         mesh.uv = uvs.ToArray();
 
         mesh.RecalculateNormals();

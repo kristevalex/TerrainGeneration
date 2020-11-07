@@ -13,8 +13,9 @@ public class World : MonoBehaviour
     private GameObject debugScreen;
     Vector3 playerPrevUpdate;
     Vector3 spawnPosition;
-    
+
     public Material material;
+    public Material transparentMaterial;
 
     [Space(10)]
 
@@ -107,6 +108,19 @@ public class World : MonoBehaviour
         return blockTypes[GetVoxel(pos)].isSolid;
     }
 
+    public bool CheckForVoxelTrancparency(Vector3 pos)
+    {
+        if (!IsVoxelInWorld(pos))
+            return false;
+
+        ChunkCoord voxelChunck = new ChunkCoord(pos);
+
+        if (chunks[voxelChunck.x, voxelChunck.y] != null && chunks[voxelChunck.x, voxelChunck.y].isPopulated)
+            return blockTypes[chunks[voxelChunck.x, voxelChunck.y].GetVoxelFromGlobalVector(pos)].isTransparent;
+
+        return blockTypes[GetVoxel(pos)].isTransparent;
+    }
+
     public byte GetVoxel(Vector3 pos, int height = -1, int biome = -1) 
     {
         if (!IsVoxelInWorld(pos))
@@ -147,7 +161,7 @@ public class World : MonoBehaviour
             return false;
         if (pos.y < 0 || pos.y >= VoxelData.chunkHeight)
             return false;
-       
+
 
         return true;
     }
@@ -208,6 +222,7 @@ public struct BlockType
 {
     public string name;
     public bool isSolid;
+    public bool isTransparent;
 
     [Header("Texture values")]
     public int backFace;

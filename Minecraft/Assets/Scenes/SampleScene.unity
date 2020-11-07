@@ -575,9 +575,11 @@ MonoBehaviour:
   player: {fileID: 1773788783}
   debugScreen: {fileID: 446049797}
   material: {fileID: 2100000, guid: 1f66b532d3cbd6049aa47fff2f48860a, type: 2}
+  transparentMaterial: {fileID: 2100000, guid: 9dacdb26e21950840943dd64cf8dd7ce, type: 2}
   blockTypes:
   - name: Air
     isSolid: 0
+    isTransparent: 1
     backFace: 0
     frontFace: 0
     topFace: 0
@@ -586,6 +588,7 @@ MonoBehaviour:
     rightFace: 0
   - name: Bedrock
     isSolid: 1
+    isTransparent: 0
     backFace: 9
     frontFace: 9
     topFace: 9
@@ -594,6 +597,7 @@ MonoBehaviour:
     rightFace: 9
   - name: Stone
     isSolid: 1
+    isTransparent: 0
     backFace: 0
     frontFace: 0
     topFace: 0
@@ -602,6 +606,7 @@ MonoBehaviour:
     rightFace: 0
   - name: Grass
     isSolid: 1
+    isTransparent: 0
     backFace: 2
     frontFace: 2
     topFace: 7
@@ -610,6 +615,7 @@ MonoBehaviour:
     rightFace: 2
   - name: Dirt
     isSolid: 1
+    isTransparent: 0
     backFace: 1
     frontFace: 1
     topFace: 1
@@ -618,12 +624,22 @@ MonoBehaviour:
     rightFace: 1
   - name: Sand
     isSolid: 1
+    isTransparent: 0
     backFace: 10
     frontFace: 10
     topFace: 10
     buttomFace: 10
     leftFace: 10
     rightFace: 10
+  - name: Glass
+    isSolid: 1
+    isTransparent: 1
+    backFace: 3
+    frontFace: 3
+    topFace: 3
+    buttomFace: 3
+    leftFace: 3
+    rightFace: 3
   basicBiomeGrid: 100
   biomeNoiseMult: 3000
   biomeNoiseDist: 3
