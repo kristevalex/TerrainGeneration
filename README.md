@@ -15,4 +15,5 @@ And basics of biome generation:
 ![Basic Terrain Samle](pics/BasicBiomes.png)
 
 ## <a name="s-Minecraft"></a> Minecraft
-To be added
+Here you will find mincraft like terrain with a few biomes affecting generation:
+![Basic Terrain Samle](pics/MincraftBasicTerrain.png)
