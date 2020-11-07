@@ -48,7 +48,7 @@ public static class Noise
     public static int GetWeight(int x, int y, World world)
     {
         float ans = 0;
-        float[] biomeWeights = GetBiomes(x, y, world.seed, world.basicBiomeGrid, world.biomes.Length, world.biomeNoiseMult, world.biomeNoiseDist);
+        float[] biomeWeights = GetBiomes(x, y, world.seed, world.basicBiomeGrid, world.biomes.Length, world.biomeNoiseMult, world.biomeNoiseDist, world.smoothnessMod);
 
         for (int i = 0; i < biomeWeights.Length; i++)
         {
@@ -62,7 +62,7 @@ public static class Noise
         return Mathf.RoundToInt(ans);
     }
 
-    public static int GetBiome(int x, int y, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist)
+    public static int GetBiome(int x, int y, int seed, int biomesGrid, BiomeType[] biomes, float noiseMult, float noiseDist)
     {
         System.Random prng = new System.Random(seed);
         SeedRandom.SetSeed(seed);
@@ -100,6 +100,8 @@ public static class Noise
                 dist += (int)(Mathf.PerlinNoise(noiseDist * ((gridX + i) * biomesGrid + biomeX - x + offsetX) / 100f,
                                                 noiseDist * ((gridY + j) * biomesGrid + biomeY - y + offsetY) / 100f) * noiseMult);
 
+                dist -= (int) biomes[SeedRandom.Get(gridX + i, gridY + j) % (biomes.Length)].strength;
+
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -109,10 +111,10 @@ public static class Noise
         }
 
 
-        return SeedRandom.Get(gridX + closest / 4, gridY + closest % 4) % biomesNum;
+        return SeedRandom.Get(gridX + closest / 4, gridY + closest % 4) % (biomes.Length);
     }
 
-    public static float[] GetBiomes(int x, int y, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist, bool debug = false)
+    public static float[] GetBiomes(int x, int y, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist, float smoothnessMod)
     {
         System.Random prng = new System.Random(seed);
         SeedRandom.SetSeed(seed);
@@ -164,9 +166,9 @@ public static class Noise
         float total = 0;
         for (int i = 0; i < 16; i++)
         {
-            if (dists[i] - closestDist < VoxelData.smoothnessMod)
+            if (dists[i] - closestDist < smoothnessMod)
             {
-                total += (VoxelData.smoothnessMod - dists[i] + closestDist) * (VoxelData.smoothnessMod - dists[i] + closestDist);
+                total += (smoothnessMod - dists[i] + closestDist) * (smoothnessMod - dists[i] + closestDist);
             }
         }
 
@@ -176,10 +178,10 @@ public static class Noise
 
         for (int i = 0; i < 16; i++)
         {
-            if (dists[i] - closestDist < VoxelData.smoothnessMod)
+            if (dists[i] - closestDist < smoothnessMod)
             {
-                biomeWeights[SeedRandom.Get(gridX + i / 4, gridY + i % 4) % biomesNum] += 1.0f * (VoxelData.smoothnessMod + closestDist - dists[i]) * 
-                                                                                                 (VoxelData.smoothnessMod + closestDist - dists[i]) / total;
+                biomeWeights[SeedRandom.Get(gridX + i / 4, gridY + i % 4) % biomesNum] += 1.0f * (smoothnessMod + closestDist - dists[i]) * 
+                                                                                                 (smoothnessMod + closestDist - dists[i]) / total;
             }
         }
 

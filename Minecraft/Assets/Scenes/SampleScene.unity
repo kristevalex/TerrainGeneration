@@ -624,16 +624,16 @@ MonoBehaviour:
     buttomFace: 10
     leftFace: 10
     rightFace: 10
-  basicBiomeGrid: 70
+  basicBiomeGrid: 100
   biomeNoiseMult: 3000
   biomeNoiseDist: 3
-  smoothnessMod: 3000
+  smoothnessMod: 5000
   biomes:
   - name: Plains
     scale: 100
     octaves: 2
-    persistance: 0.3
-    lacunarity: 3.1
+    persistance: 0.54
+    lacunarity: 2.91
     heightCurve:
       serializedVersion: 2
       m_Curve:
@@ -696,6 +696,7 @@ MonoBehaviour:
       m_RotationOrder: 0
     topBlock: 3
     topLayer: 4
+    strength: 0
   - name: Stone Mountains
     scale: 70
     octaves: 3
@@ -763,6 +764,7 @@ MonoBehaviour:
       m_RotationOrder: 0
     topBlock: 2
     topLayer: 2
+    strength: 1000
   - name: Mountains
     scale: 70
     octaves: 3
@@ -830,6 +832,143 @@ MonoBehaviour:
       m_RotationOrder: 0
     topBlock: 3
     topLayer: 2
+    strength: 1000
+  - name: Mountains Platoe
+    scale: 70
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 35
+        inSlope: 34.972313
+        outSlope: 34.972313
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.15071191
+        value: 40.270744
+        inSlope: 88.939095
+        outSlope: 88.939095
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.46605194
+        outWeight: 0.48626074
+      - serializedVersion: 3
+        time: 0.2468305
+        value: 56.661617
+        inSlope: 117.740746
+        outSlope: 117.740746
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.15751812
+      - serializedVersion: 3
+        time: 0.3990472
+        value: 76.1636
+        inSlope: 73.137535
+        outSlope: 73.137535
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.35945776
+      - serializedVersion: 3
+        time: 0.65462273
+        value: 82.092125
+        inSlope: 1.3749218
+        outSlope: 1.3749218
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.22841036
+        outWeight: 0.38998684
+      - serializedVersion: 3
+        time: 1
+        value: 82.25882
+        inSlope: 0.4826451
+        outSlope: 0.4826451
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 3
+    topLayer: 2
+    strength: 1000
+  - name: Hills
+    scale: 90
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 35
+        inSlope: 10.795271
+        outSlope: 10.795271
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.20489587
+        value: 37.211906
+        inSlope: 6.024322
+        outSlope: 6.024322
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.46605194
+        outWeight: 0.16590022
+      - serializedVersion: 3
+        time: 0.37491277
+        value: 49.32043
+        inSlope: 117.740746
+        outSlope: 117.740746
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.15751812
+      - serializedVersion: 3
+        time: 0.5320566
+        value: 68.05771
+        inSlope: 128.93106
+        outSlope: 128.93106
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.72359246
+        value: 78.42153
+        inSlope: 24.434845
+        outSlope: 24.434845
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.22841036
+        outWeight: 0.2935915
+      - serializedVersion: 3
+        time: 1
+        value: 83.78824
+        inSlope: 19.41592
+        outSlope: 19.41592
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 3
+    topLayer: 4
+    strength: 1000
   - name: Desert
     scale: 100
     octaves: 3
@@ -879,6 +1018,7 @@ MonoBehaviour:
       m_RotationOrder: 0
     topBlock: 5
     topLayer: 5
+    strength: -1500
 --- !u!4 &475395641
 Transform:
   m_ObjectHideFlags: 0

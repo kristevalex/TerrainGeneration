@@ -27,8 +27,7 @@ public class World : MonoBehaviour
     public int basicBiomeGrid;
     public float biomeNoiseMult;
     public float biomeNoiseDist;
-    [SerializeField]
-    private float smoothnessMod;
+    public float smoothnessMod;
 
     public BiomeType[] biomes;
 
@@ -39,12 +38,11 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-        VoxelData.smoothnessMod = smoothnessMod;
-
+        
         isCreatingChuncks = false;
 
         int biome = Noise.GetBiome((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
-                                   seed, basicBiomeGrid, biomes.Length, biomeNoiseMult, biomeNoiseDist);
+                                   seed, basicBiomeGrid, biomes, biomeNoiseMult, biomeNoiseDist);
 
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
                                     Noise.GetWeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), this) + 2, 
@@ -115,11 +113,10 @@ public class World : MonoBehaviour
             return 0;
 
         if (biome == -1)
-            biome = Noise.GetBiome((int)(pos.x), (int)(pos.z), seed, basicBiomeGrid, biomes.Length, biomeNoiseMult, biomeNoiseDist);
+            biome = Noise.GetBiome((int)(pos.x), (int)(pos.z), seed, basicBiomeGrid, biomes, biomeNoiseMult, biomeNoiseDist);
 
         if (height == -1)
-            height = Noise.GetWeight((int)pos.x, (int)pos.z, this); // GenerateHeight((int)pos.x, (int)pos.z, biomes[biome].heightCurve, seed, biomes[biome].scale, biomes[biome].octaves, biomes[biome].persistance, biomes[biome].lacunarity);
-
+            height = Noise.GetWeight((int)pos.x, (int)pos.z, this); 
         if (pos.y == 0)
             return Blocks.bedrock;
         else if (pos.y > height)
@@ -254,4 +251,5 @@ public struct BiomeType
     public AnimationCurve heightCurve;
     public byte topBlock;
     public byte topLayer;
+    public float strength;
 }
