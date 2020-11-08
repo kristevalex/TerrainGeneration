@@ -658,6 +658,15 @@ MonoBehaviour:
     buttomFace: 16
     leftFace: 16
     rightFace: 16
+  - name: Cactus
+    isSolid: 1
+    isTransparent: 0
+    backFace: 18
+    frontFace: 18
+    topFace: 17
+    buttomFace: 19
+    leftFace: 18
+    rightFace: 18
   basicBiomeGrid: 100
   biomeNoiseMult: 3000
   biomeNoiseDist: 3
@@ -732,13 +741,14 @@ MonoBehaviour:
     topLayer: 4
     strength: -0.05
     probobilityWeight: 1
-    hasTrees: 1
-    treeZoneScale: 1.04
-    treeZoneThreshold: 0.91
-    treePlacementScale: 15
-    treePlacementThreshold: 0.8
-    maxTreeHeight: 5
-    minTreeHeight: 11
+    structures:
+    - name: Tree
+      minHeight: 5
+      maxHeight: 9
+      treeZoneScale: 1.04
+      treeZoneThreshold: 0.91
+      treePlacementScale: 15
+      treePlacementThreshold: 0.8
   - name: Forest
     scale: 100
     octaves: 3
@@ -781,13 +791,14 @@ MonoBehaviour:
     topLayer: 4
     strength: -0.05
     probobilityWeight: 1
-    hasTrees: 1
-    treeZoneScale: 0.42
-    treeZoneThreshold: 0.3
-    treePlacementScale: 15
-    treePlacementThreshold: 0.8
-    maxTreeHeight: 5
-    minTreeHeight: 12
+    structures:
+    - name: Tree
+      minHeight: 5
+      maxHeight: 12
+      treeZoneScale: 0.42
+      treeZoneThreshold: 0.3
+      treePlacementScale: 15
+      treePlacementThreshold: 0.8
   - name: Stone Mountains
     scale: 70
     octaves: 3
@@ -857,13 +868,7 @@ MonoBehaviour:
     topLayer: 2
     strength: 0.2
     probobilityWeight: 1
-    hasTrees: 0
-    treeZoneScale: 0
-    treeZoneThreshold: 0
-    treePlacementScale: 0
-    treePlacementThreshold: 0
-    maxTreeHeight: 0
-    minTreeHeight: 0
+    structures: []
   - name: Mountains
     scale: 70
     octaves: 3
@@ -933,13 +938,7 @@ MonoBehaviour:
     topLayer: 2
     strength: 0.2
     probobilityWeight: 1
-    hasTrees: 0
-    treeZoneScale: 0
-    treeZoneThreshold: 0
-    treePlacementScale: 0
-    treePlacementThreshold: 0
-    maxTreeHeight: 0
-    minTreeHeight: 0
+    structures: []
   - name: Mountains Platoe
     scale: 70
     octaves: 3
@@ -1009,13 +1008,7 @@ MonoBehaviour:
     topLayer: 2
     strength: 0.2
     probobilityWeight: 1
-    hasTrees: 0
-    treeZoneScale: 0
-    treeZoneThreshold: 0
-    treePlacementScale: 0
-    treePlacementThreshold: 0
-    maxTreeHeight: 0
-    minTreeHeight: 0
+    structures: []
   - name: Hills
     scale: 90
     octaves: 3
@@ -1085,13 +1078,14 @@ MonoBehaviour:
     topLayer: 4
     strength: 0.1
     probobilityWeight: 1
-    hasTrees: 1
-    treeZoneScale: 1
-    treeZoneThreshold: 0.9
-    treePlacementScale: 15
-    treePlacementThreshold: 0.8
-    maxTreeHeight: 5
-    minTreeHeight: 11
+    structures:
+    - name: Tree
+      minHeight: 6
+      maxHeight: 10
+      treeZoneScale: 1
+      treeZoneThreshold: 0.9
+      treePlacementScale: 15
+      treePlacementThreshold: 0.8
   - name: Forest Hills
     scale: 90
     octaves: 3
@@ -1161,13 +1155,14 @@ MonoBehaviour:
     topLayer: 4
     strength: 0.1
     probobilityWeight: 1
-    hasTrees: 1
-    treeZoneScale: 0.4
-    treeZoneThreshold: 0.3
-    treePlacementScale: 15
-    treePlacementThreshold: 0.8
-    maxTreeHeight: 5
-    minTreeHeight: 11
+    structures:
+    - name: Tree
+      minHeight: 5
+      maxHeight: 12
+      treeZoneScale: 0.4
+      treeZoneThreshold: 0.3
+      treePlacementScale: 15
+      treePlacementThreshold: 0.8
   - name: Desert
     scale: 100
     octaves: 3
@@ -1219,13 +1214,14 @@ MonoBehaviour:
     topLayer: 5
     strength: -0.3
     probobilityWeight: 10
-    hasTrees: 0
-    treeZoneScale: 0
-    treeZoneThreshold: 0
-    treePlacementScale: 0
-    treePlacementThreshold: 0
-    maxTreeHeight: 0
-    minTreeHeight: 0
+    structures:
+    - name: Cactus
+      minHeight: 2
+      maxHeight: 4
+      treeZoneScale: 0.1
+      treeZoneThreshold: 0.5
+      treePlacementScale: 15
+      treePlacementThreshold: 0.85
 --- !u!4 &475395641
 Transform:
   m_ObjectHideFlags: 0

@@ -162,11 +162,21 @@ public class World : MonoBehaviour
             return Blocks.bedrock;
         else if (pos.y > height)
         {
-            if (biomes[biome].hasTrees)
-                if (pos.y == height + 1)
-                    if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[biome].treeZoneScale, seed) > biomes[biome].treeZoneThreshold)
-                        if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[biome].treePlacementScale, seed) > biomes[biome].treePlacementThreshold)
-                            Structure.makeTree(pos, modifications, biomes[biome].minTreeHeight, biomes[biome].maxTreeHeight);
+            if (pos.y == height + 1)
+                for (int i = 0; i < biomes[biome].structures.Length; i++)
+                    if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[biome].structures[i].treeZoneScale, seed) > biomes[biome].structures[i].treeZoneThreshold)
+                        if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[biome].structures[i].treePlacementScale, seed) > biomes[biome].structures[i].treePlacementThreshold)
+                            switch (biomes[biome].structures[i].name)
+                            {
+                                case "Tree":
+                                    Structure.makeTree(pos, modifications, biomes[biome].structures[i].minHeight, biomes[biome].structures[i].maxHeight);
+                                    break;
+
+                                case "Cactus":
+                                    Structure.makeCactus(pos, modifications, biomes[biome].structures[i].minHeight, biomes[biome].structures[i].maxHeight);
+                                    break;
+                            }
+
 
             return Blocks.air;
         }
@@ -323,15 +333,7 @@ public struct BiomeType
     public float strength;
     public int probobilityWeight;
 
-    public bool hasTrees;
-    public float treeZoneScale;
-    [Range(0, 1)]
-    public float treeZoneThreshold;
-    public float treePlacementScale;
-    [Range(0, 1)]
-    public float treePlacementThreshold;
-    public int maxTreeHeight;
-    public int minTreeHeight;
+    public StructureData[] structures;
 }
 
 public class VoxelMod

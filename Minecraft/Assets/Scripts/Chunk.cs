@@ -14,6 +14,7 @@ public static class Blocks
     public static byte glass = 6;
     public static byte wood = 7;
     public static byte leave = 8;
+    public static byte cactus = 9;
 }
 
 public class Chunk 

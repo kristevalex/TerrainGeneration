@@ -6,7 +6,7 @@ public static class VoxelData
     public static readonly int chunkHeight = 120;
     public static readonly int worldSizeInChunks = 100;
 
-    public static readonly int viewDistInChuncks = 6;
+    public static readonly int viewDistInChuncks = 7;
 
     public static int biomeProbobilitySum = 0;
 

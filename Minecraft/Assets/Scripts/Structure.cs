@@ -31,8 +31,8 @@ public static class Structure
     {
         int height = SeedRandom.Get((int)pos.x, (int)pos.y) % (maxHeight - minHeight + 1) + minHeight;
 
-        int chunkX = (int) pos.x / VoxelData.chunkSize;
-        int chunkY = (int) pos.z / VoxelData.chunkSize;
+        int chunkX = (int)pos.x / VoxelData.chunkSize;
+        int chunkY = (int)pos.z / VoxelData.chunkSize;
 
         pos.x -= chunkX * VoxelData.chunkSize;
         pos.z -= chunkY * VoxelData.chunkSize;
@@ -42,9 +42,8 @@ public static class Structure
 
         for (int i = 0; i < height; i++)
             queue[chunkX, chunkY].Enqueue(new VoxelMod(new Vector3(pos.x, pos.y + i, pos.z), Blocks.wood));
-
-        queue[chunkX, chunkY].Enqueue(new VoxelMod(new Vector3(pos.x, pos.y + height, pos.z), Blocks.leave));
-
+        
+        
         pos.x += chunkX * VoxelData.chunkSize;
         pos.z += chunkY * VoxelData.chunkSize;
 
@@ -52,4 +51,42 @@ public static class Structure
 
         return true;
     }
+
+    public static bool makeCactus(Vector3 pos, Queue<VoxelMod>[,] queue, int minHeight, int maxHeight)
+    {
+        int height = SeedRandom.Get((int)pos.x, (int)pos.y) % (maxHeight - minHeight + 1) + minHeight;
+
+        int chunkX = (int)pos.x / VoxelData.chunkSize;
+        int chunkY = (int)pos.z / VoxelData.chunkSize;
+
+        pos.x -= chunkX * VoxelData.chunkSize;
+        pos.z -= chunkY * VoxelData.chunkSize;
+
+        if (queue[chunkX, chunkY] == null)
+            queue[chunkX, chunkY] = new Queue<VoxelMod>();
+
+        for (int i = 0; i < height; i++)
+            queue[chunkX, chunkY].Enqueue(new VoxelMod(new Vector3(pos.x, pos.y + i, pos.z), Blocks.cactus));
+
+        pos.x += chunkX * VoxelData.chunkSize;
+        pos.z += chunkY * VoxelData.chunkSize;
+
+        return true;
+    }
+}
+
+[System.Serializable]
+public class StructureData
+{
+    public string name;
+
+    public int minHeight;
+    public int maxHeight;
+
+    public float treeZoneScale;
+    [Range(0, 1)]
+    public float treeZoneThreshold;
+    public float treePlacementScale;
+    [Range(0, 1)]
+    public float treePlacementThreshold;
 }
