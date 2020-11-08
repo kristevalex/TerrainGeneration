@@ -19,3 +19,4 @@ Here you will find mincraft like terrain with a few biomes affecting generation:
 ![Basic Terrain Samle](pics/MincraftBasicTerrain.png)
 ![Basic Terrain Samle](pics/MincraftBasicTerrain2.png)
 ![Basic Terrain Samle](pics/MincraftBasicTerrain3.png)
+![Basic Terrain Samle](pics/MincraftBasicTerrain4.png)
