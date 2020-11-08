@@ -571,7 +571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f4f3917982095418dba5ac525e3281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 40
+  seed: 143
   player: {fileID: 1773788783}
   debugScreen: {fileID: 446049797}
   material: {fileID: 2100000, guid: 1f66b532d3cbd6049aa47fff2f48860a, type: 2}
@@ -640,6 +640,24 @@ MonoBehaviour:
     buttomFace: 3
     leftFace: 3
     rightFace: 3
+  - name: Wood
+    isSolid: 1
+    isTransparent: 0
+    backFace: 5
+    frontFace: 5
+    topFace: 6
+    buttomFace: 6
+    leftFace: 5
+    rightFace: 5
+  - name: Leave
+    isSolid: 1
+    isTransparent: 1
+    backFace: 16
+    frontFace: 16
+    topFace: 16
+    buttomFace: 16
+    leftFace: 16
+    rightFace: 16
   basicBiomeGrid: 100
   biomeNoiseMult: 3000
   biomeNoiseDist: 3
@@ -713,6 +731,61 @@ MonoBehaviour:
     topBlock: 3
     topLayer: 4
     strength: 0
+    hasTrees: 1
+    treeZoneScale: 1.04
+    treeZoneThreshold: 0.91
+    treePlacementScale: 15
+    treePlacementThreshold: 0.8
+    maxTreeHeight: 5
+    minTreeHeight: 11
+  - name: Forest
+    scale: 100
+    octaves: 3
+    persistance: 0.54
+    lacunarity: 2.91
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 30
+        inSlope: 13.904667
+        outSlope: 13.904667
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.70749307
+        value: 39.837456
+        inSlope: 28.893597
+        outSlope: 28.893597
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.09929097
+        outWeight: 0.18394078
+      - serializedVersion: 3
+        time: 1.0149077
+        value: 53.82719
+        inSlope: 34.69658
+        outSlope: 34.69658
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.17255433
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 3
+    topLayer: 4
+    strength: 0
+    hasTrees: 1
+    treeZoneScale: 0.42
+    treeZoneThreshold: 0.3
+    treePlacementScale: 15
+    treePlacementThreshold: 0.8
+    maxTreeHeight: 5
+    minTreeHeight: 12
   - name: Stone Mountains
     scale: 70
     octaves: 3
@@ -781,6 +854,13 @@ MonoBehaviour:
     topBlock: 2
     topLayer: 2
     strength: 1000
+    hasTrees: 0
+    treeZoneScale: 0
+    treeZoneThreshold: 0
+    treePlacementScale: 0
+    treePlacementThreshold: 0
+    maxTreeHeight: 0
+    minTreeHeight: 0
   - name: Mountains
     scale: 70
     octaves: 3
@@ -849,6 +929,13 @@ MonoBehaviour:
     topBlock: 3
     topLayer: 2
     strength: 1000
+    hasTrees: 0
+    treeZoneScale: 0
+    treeZoneThreshold: 0
+    treePlacementScale: 0
+    treePlacementThreshold: 0
+    maxTreeHeight: 0
+    minTreeHeight: 0
   - name: Mountains Platoe
     scale: 70
     octaves: 3
@@ -917,6 +1004,13 @@ MonoBehaviour:
     topBlock: 3
     topLayer: 2
     strength: 1000
+    hasTrees: 0
+    treeZoneScale: 0
+    treeZoneThreshold: 0
+    treePlacementScale: 0
+    treePlacementThreshold: 0
+    maxTreeHeight: 0
+    minTreeHeight: 0
   - name: Hills
     scale: 90
     octaves: 3
@@ -985,6 +1079,88 @@ MonoBehaviour:
     topBlock: 3
     topLayer: 4
     strength: 1000
+    hasTrees: 1
+    treeZoneScale: 1
+    treeZoneThreshold: 0.9
+    treePlacementScale: 15
+    treePlacementThreshold: 0.8
+    maxTreeHeight: 5
+    minTreeHeight: 11
+  - name: Forest Hills
+    scale: 90
+    octaves: 3
+    persistance: 0.3
+    lacunarity: 3.1
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 35
+        inSlope: 10.795271
+        outSlope: 10.795271
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.20489587
+        value: 37.211906
+        inSlope: 6.024322
+        outSlope: 6.024322
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.46605194
+        outWeight: 0.16590022
+      - serializedVersion: 3
+        time: 0.37491277
+        value: 49.32043
+        inSlope: 117.740746
+        outSlope: 117.740746
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.15751812
+      - serializedVersion: 3
+        time: 0.5320566
+        value: 68.05771
+        inSlope: 128.93106
+        outSlope: 128.93106
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.72359246
+        value: 78.42153
+        inSlope: 24.434845
+        outSlope: 24.434845
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.22841036
+        outWeight: 0.2935915
+      - serializedVersion: 3
+        time: 1
+        value: 83.78824
+        inSlope: 19.41592
+        outSlope: 19.41592
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    topBlock: 3
+    topLayer: 4
+    strength: 1000
+    hasTrees: 1
+    treeZoneScale: 0.4
+    treeZoneThreshold: 0.3
+    treePlacementScale: 15
+    treePlacementThreshold: 0.8
+    maxTreeHeight: 5
+    minTreeHeight: 11
   - name: Desert
     scale: 100
     octaves: 3
@@ -1035,6 +1211,13 @@ MonoBehaviour:
     topBlock: 5
     topLayer: 5
     strength: -1500
+    hasTrees: 0
+    treeZoneScale: 0
+    treeZoneThreshold: 0
+    treePlacementScale: 0
+    treePlacementThreshold: 0
+    maxTreeHeight: 0
+    minTreeHeight: 0
 --- !u!4 &475395641
 Transform:
   m_ObjectHideFlags: 0

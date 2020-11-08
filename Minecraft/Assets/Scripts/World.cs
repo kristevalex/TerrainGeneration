@@ -37,9 +37,13 @@ public class World : MonoBehaviour
     List<ChunkCoord> chuncksToCreate = new List<ChunkCoord>();
     bool isCreatingChuncks;
 
+    Queue<VoxelMod>[,] modifications = new Queue<VoxelMod>[VoxelData.worldSizeInChunks, VoxelData.worldSizeInChunks];
+    
+
     private void Start()
     {
-        
+        SeedRandom.SetSeed(seed);
+
         isCreatingChuncks = false;
 
         int biome = Noise.GetBiome((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
@@ -73,6 +77,9 @@ public class World : MonoBehaviour
         while (chuncksToCreate.Count > 0)
         {
             chunks[chuncksToCreate[0].x, chuncksToCreate[0].y].Init();
+            
+            UpdateChuncks(chuncksToCreate[0]);
+
             chuncksToCreate.RemoveAt(0);
 
             yield return null;
@@ -88,6 +95,23 @@ public class World : MonoBehaviour
             for (int y = VoxelData.worldSizeInChunks / 2 - VoxelData.viewDistInChuncks; y < VoxelData.worldSizeInChunks / 2 + VoxelData.viewDistInChuncks; y++)
             {
                 chunks[x, y] = new Chunk(new ChunkCoord(x, y), this, true);
+            }
+        }
+
+
+        for (int x = VoxelData.worldSizeInChunks / 2 - VoxelData.viewDistInChuncks; x < VoxelData.worldSizeInChunks / 2 + VoxelData.viewDistInChuncks; x++)
+        {
+            for (int y = VoxelData.worldSizeInChunks / 2 - VoxelData.viewDistInChuncks; y < VoxelData.worldSizeInChunks / 2 + VoxelData.viewDistInChuncks; y++)
+            {
+                if (chunks[x, y] != null && chunks[x, y].isReady && modifications[x, y] != null)
+                {
+                    while (modifications[x, y].Count > 0)
+                    {
+                        chunks[x, y].modifications.Enqueue(modifications[x, y].Dequeue());
+                    }
+
+                    chunks[x, y].UpdateChunk();
+                }
             }
         }
 
@@ -130,11 +154,19 @@ public class World : MonoBehaviour
             biome = Noise.GetBiome((int)(pos.x), (int)(pos.z), seed, basicBiomeGrid, biomes, biomeNoiseMult, biomeNoiseDist);
 
         if (height == -1)
-            height = Noise.GetWeight((int)pos.x, (int)pos.z, this); 
+            height = Noise.GetWeight((int)pos.x, (int)pos.z, this);
         if (pos.y == 0)
             return Blocks.bedrock;
         else if (pos.y > height)
+        {
+            if (biomes[biome].hasTrees)
+                if (pos.y == height + 1)
+                    if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[biome].treeZoneScale, seed) > biomes[biome].treeZoneThreshold)
+                        if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[biome].treePlacementScale, seed) > biomes[biome].treePlacementThreshold)
+                            Structure.makeTree(pos, modifications, biomes[biome].minTreeHeight, biomes[biome].maxTreeHeight);
+
             return Blocks.air;
+        }
         else if (pos.y == height)
             return biomes[biome].topBlock;
         else if (pos.y >= height - 3)
@@ -215,6 +247,25 @@ public class World : MonoBehaviour
             }
         }
     }
+
+    public void UpdateChuncks(ChunkCoord pos)
+    {
+        for (int x = pos.x - 1; x <= pos.x + 1; x++)
+        {
+            for (int y = pos.y - 1; y <= pos.y + 1; y++)
+            {
+                if (chunks[x, y] != null && chunks[x, y].isReady && modifications[x, y] != null)
+                {
+                    while (modifications[x, y].Count > 0)
+                    {
+                        chunks[x, y].modifications.Enqueue(modifications[x, y].Dequeue());
+                    }
+
+                    chunks[x, y].UpdateChunk();
+                }
+            }
+        }
+    }
 }
 
 [System.Serializable]
@@ -267,4 +318,32 @@ public struct BiomeType
     public byte topBlock;
     public byte topLayer;
     public float strength;
+
+    public bool hasTrees;
+    public float treeZoneScale;
+    [Range(0, 1)]
+    public float treeZoneThreshold;
+    public float treePlacementScale;
+    [Range(0, 1)]
+    public float treePlacementThreshold;
+    public int maxTreeHeight;
+    public int minTreeHeight;
+}
+
+public class VoxelMod
+{
+    public Vector3 position;
+    public byte id;
+
+    public VoxelMod()
+    {
+        position = new Vector3();
+        id = 0;
+    }
+
+    public VoxelMod(Vector3 _position, byte _id)
+    {
+        position = _position;
+        id = _id;
+    }
 }

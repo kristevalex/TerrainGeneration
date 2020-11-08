@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\DebugScreen.cs" />
     <Compile Include="Assets\Scripts\Noise.cs" />
     <Compile Include="Assets\Scripts\SeedRandom.cs" />
+    <Compile Include="Assets\Scripts\Structure.cs" />
     <Compile Include="Assets\Scripts\VoxelData.cs" />
     <Compile Include="Assets\Scripts\World.cs" />
     <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />

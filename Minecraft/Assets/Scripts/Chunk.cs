@@ -10,6 +10,10 @@ public static class Blocks
     public static byte stone = 2;
     public static byte grass = 3;
     public static byte dirt = 4;
+    public static byte sand = 5;
+    public static byte glass = 6;
+    public static byte wood = 7;
+    public static byte leave = 8;
 }
 
 public class Chunk 
@@ -23,6 +27,7 @@ public class Chunk
     World world;
 
     int vertexId = 0;
+    public bool isReady = false;
 
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
@@ -35,19 +40,25 @@ public class Chunk
 
     byte[,,] blocks = new byte[VoxelData.chunkSize, VoxelData.chunkSize, VoxelData.chunkHeight];
 
+    public Queue<VoxelMod> modifications = new Queue<VoxelMod>();
+
     public Chunk(ChunkCoord _coord, World _world, bool generateOnLoad)
     {
         IsActive = true;
         coord = _coord;
         world = _world;
 
-        if(generateOnLoad)
+        if (generateOnLoad)
             Init();
     }
 
     public void Init()
     {
         chunkObject = new GameObject();
+        chunkObject.transform.SetParent(world.transform);
+        chunkObject.transform.position = new Vector3(coord.x * VoxelData.chunkSize, 0.0f, coord.y * VoxelData.chunkSize);
+        chunkObject.name = "Chunk (" + coord.x + ", " + coord.y + ")";
+
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
         meshCollider = chunkObject.AddComponent<MeshCollider>();
@@ -55,10 +66,6 @@ public class Chunk
         materials[0] = world.material;
         materials[1] = world.transparentMaterial;
         meshRenderer.materials = materials;
-
-        chunkObject.transform.SetParent(world.transform);
-        chunkObject.transform.position = new Vector3(coord.x * VoxelData.chunkSize, 0.0f, coord.y * VoxelData.chunkSize);
-        chunkObject.name = "Chunk (" + coord.x + ", " + coord.y + ")";
 
         GenerateBlocks();
         CreateMeshData();
@@ -68,6 +75,8 @@ public class Chunk
 
         if (!_isActive)
             chunkObject.SetActive(false);
+
+        isReady = true;
     }
 
     void GenerateBlocks()
@@ -213,6 +222,42 @@ public class Chunk
         mesh.RecalculateNormals();
 
         meshFilter.mesh = mesh;
+    }
+
+    public void UpdateChunk()
+    {
+        while (modifications.Count > 0)
+        {
+            VoxelMod v = modifications.Dequeue();
+            blocks[(int)v.position.x, (int)v.position.z, (int)v.position.y] = v.id;
+        }
+
+        ClearMeshData();
+
+        for (int z = 0; z < VoxelData.chunkHeight; z++)
+        {
+            for (int x = 0; x < VoxelData.chunkSize; x++)
+            {
+                for (int y = 0; y < VoxelData.chunkSize; y++)
+                {
+
+                    if (world.blockTypes[blocks[x, y, z]].isSolid)
+                        AddVoxelDataToChunck(new Vector3(x, z, y));
+
+                }
+            }
+        }
+
+        CreateMesh();
+    }
+
+    void ClearMeshData()
+    {
+        vertexId = 0;
+        vertices.Clear();
+        triangles.Clear();
+        transparentTriangles.Clear();
+        uvs.Clear();
     }
 
     void AddTexture(int textureId)

@@ -2,6 +2,16 @@
 
 public static class Noise
 {
+    public static float Get2DPerlin(Vector2 position, float scale, int seed)
+    {
+        System.Random prng = new System.Random(seed);
+
+        float offsetXg = prng.Next(-10000, 100000);
+        float offsetYg = prng.Next(-10000, 100000);
+
+        return Mathf.PerlinNoise((position.x + 0.1f) / 10f * scale + offsetXg, (position.y + 0.1f) / 10f * scale + offsetYg);
+    }
+
     public static int GenerateHeight(int x, int y, AnimationCurve heightCurve, int seed, float scale, int octaves, float persistance, float lacunarity)
     {
         System.Random prng = new System.Random(seed);
