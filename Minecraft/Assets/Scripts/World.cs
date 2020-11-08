@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    [SerializeField]
     public int seed;
 
     [Header("Thecnical")]
@@ -44,11 +44,14 @@ public class World : MonoBehaviour
     {
         SeedRandom.SetSeed(seed);
 
+        for (int i = 0; i < biomes.Length; i++)
+        {
+            VoxelData.biomeProbobilitySum += biomes[i].probobilityWeight;
+        }
+
         isCreatingChuncks = false;
 
-        int biome = Noise.GetBiome((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f),
-                                   seed, basicBiomeGrid, biomes, biomeNoiseMult, biomeNoiseDist);
-
+        
         spawnPosition = new Vector3(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f, 
                                     Noise.GetWeight((int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), (int)(VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f), this) + 2, 
                                     VoxelData.worldSizeInChunks * VoxelData.chunkSize / 2f);
@@ -151,7 +154,7 @@ public class World : MonoBehaviour
             return 0;
 
         if (biome == -1)
-            biome = Noise.GetBiome((int)(pos.x), (int)(pos.z), seed, basicBiomeGrid, biomes, biomeNoiseMult, biomeNoiseDist);
+            biome = Noise.GetBiome(biomes, Noise.GetBiomes((int)pos.x, (int)pos.z, seed, basicBiomeGrid, biomes, biomeNoiseMult, biomeNoiseDist, smoothnessMod));
 
         if (height == -1)
             height = Noise.GetWeight((int)pos.x, (int)pos.z, this);
@@ -318,6 +321,7 @@ public struct BiomeType
     public byte topBlock;
     public byte topLayer;
     public float strength;
+    public int probobilityWeight;
 
     public bool hasTrees;
     public float treeZoneScale;

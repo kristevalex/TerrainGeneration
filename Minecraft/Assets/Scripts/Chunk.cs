@@ -85,13 +85,13 @@ public class Chunk
         {
             for (int y = 0; y < VoxelData.chunkSize; y++)
             {
-                int biome = Noise.GetBiome((int)(Position.x + x), (int)(Position.z + y), world.seed, world.basicBiomeGrid, world.biomes, world.biomeNoiseMult, world.biomeNoiseDist);
+                float[] biomeWeights = Noise.GetBiomes((int)(Position.x + x), (int)(Position.z + y), world.seed, world.basicBiomeGrid, world.biomes, world.biomeNoiseMult, world.biomeNoiseDist, world.smoothnessMod);
 
-                int height = Noise.GetWeight((int)(Position.x + x), (int)(Position.z + y), world); 
+                int height = Noise.GetWeight((int)(Position.x + x), (int)(Position.z + y), world, biomeWeights); 
                 
                 for (int i = 0; i < VoxelData.chunkHeight; i++)
                 {
-                    blocks[x, y, i] = world.GetVoxel(Position + new Vector3(x, i, y), height, biome);
+                    blocks[x, y, i] = world.GetVoxel(Position + new Vector3(x, i, y), height, Noise.GetBiome(world.biomes, biomeWeights));
                 }
             }
         }

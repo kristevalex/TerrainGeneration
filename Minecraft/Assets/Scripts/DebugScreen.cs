@@ -24,16 +24,13 @@ public class DebugScreen : MonoBehaviour
 
     void Update()
     {
-        int biome = Noise.GetBiome((int)(world.player.position.x), (int)(world.player.position.z), world.seed, world.basicBiomeGrid,
-                                   world.biomes, world.biomeNoiseMult, world.biomeNoiseDist);
-
         float[] biomes = Noise.GetBiomes((int)(world.player.position.x), (int)(world.player.position.z), world.seed, world.basicBiomeGrid,
-                                               world.biomes.Length, world.biomeNoiseMult, world.biomeNoiseDist, world.smoothnessMod);
+                                               world.biomes, world.biomeNoiseMult, world.biomeNoiseDist, world.smoothnessMod);
 
         string tmp = "Alexey Kristev's Minecraft like game\n" +
                      frameRate + " fps\n" +
                      "XYZ: " + ( - zeroX) + " / " + world.player.position.y + " / " + (world.player.position.z - zeroY) + "\n" +
-                     "Biome: " + world.biomes[biome].name + "\n";
+                     "Biome: " + world.biomes[Noise.GetBiome(world.biomes, biomes)].name + "\n";
 
         for (int i = 0; i < biomes.Length; i++)
         {

@@ -55,10 +55,11 @@ public static class Noise
         return Mathf.FloorToInt(heightCurve.Evaluate(noiseHeight / maxValue));
     }
 
-    public static int GetWeight(int x, int y, World world)
+    public static int GetWeight(int x, int y, World world, float[] biomeWeights = null)
     {
         float ans = 0;
-        float[] biomeWeights = GetBiomes(x, y, world.seed, world.basicBiomeGrid, world.biomes.Length, world.biomeNoiseMult, world.biomeNoiseDist, world.smoothnessMod);
+        if (biomeWeights == null) 
+            biomeWeights = GetBiomes(x, y, world.seed, world.basicBiomeGrid, world.biomes, world.biomeNoiseMult, world.biomeNoiseDist, world.smoothnessMod);
 
         for (int i = 0; i < biomeWeights.Length; i++)
         {
@@ -72,59 +73,23 @@ public static class Noise
         return Mathf.RoundToInt(ans);
     }
 
-    public static int GetBiome(int x, int y, int seed, int biomesGrid, BiomeType[] biomes, float noiseMult, float noiseDist)
+    public static int GetBiome(BiomeType[] biomes, float[] weights)
     {
-        System.Random prng = new System.Random(seed);
-        SeedRandom.SetSeed(seed);
-
-        float offsetX = prng.Next(-10000, 10000);
-        float offsetY = prng.Next(-10000, 10000);
-
-
-        int gridX = (int)Mathf.Floor(x / biomesGrid);
-        int gridY = (int)Mathf.Floor(y / biomesGrid);
-
-        if (x / biomesGrid - gridX > 0.5f)
-            gridX -= 2;
-        else
-            gridX -= 1;
-
-        if (y / biomesGrid - gridY > 0.5f)
-            gridY -= 2;
-        else
-            gridY -= 1;
-
-        int closest = 0;
-        int closestDist = int.MaxValue;
-        for (int i = 0; i < 4; i++)
+        float maxVal = 0f;
+        int id = 0;
+        for (int i = 0; i < biomes.Length; i++)
         {
-            for (int j = 0; j < 4; j++)
+            if (weights[i] + biomes[i].strength > maxVal)
             {
-                int curBiome = i * 4 + j;
-                int biomeX = SeedRandom.Get(gridX + i, gridY + j) % biomesGrid;
-                int biomeY = SeedRandom.Get(gridX + i, gridY + j) % biomesGrid;
-
-                int dist = ((gridX + i) * biomesGrid + biomeX - x) * ((gridX + i) * biomesGrid + biomeX - x) +
-                           ((gridY + j) * biomesGrid + biomeY - y) * ((gridY + j) * biomesGrid + biomeY - y);
-
-                dist += (int)(Mathf.PerlinNoise(noiseDist * ((gridX + i) * biomesGrid + biomeX - x + offsetX) / 100f,
-                                                noiseDist * ((gridY + j) * biomesGrid + biomeY - y + offsetY) / 100f) * noiseMult);
-
-                dist -= (int) biomes[SeedRandom.Get(gridX + i, gridY + j) % (biomes.Length)].strength;
-
-                if (dist < closestDist)
-                {
-                    closestDist = dist;
-                    closest = curBiome;
-                }
+                maxVal = weights[i] + biomes[i].strength;
+                id = i;
             }
         }
 
-
-        return SeedRandom.Get(gridX + closest / 4, gridY + closest % 4) % (biomes.Length);
+        return id;
     }
 
-    public static float[] GetBiomes(int x, int y, int seed, int biomesGrid, int biomesNum, float noiseMult, float noiseDist, float smoothnessMod)
+    public static float[] GetBiomes(int x, int y, int seed, int biomesGrid, BiomeType[] biomes, float noiseMult, float noiseDist, float smoothnessMod)
     {
         System.Random prng = new System.Random(seed);
         SeedRandom.SetSeed(seed);
@@ -182,7 +147,7 @@ public static class Noise
             }
         }
 
-        float[] biomeWeights = new float[biomesNum];
+        float[] biomeWeights = new float[biomes.Length];
 
 
 
@@ -190,8 +155,17 @@ public static class Noise
         {
             if (dists[i] - closestDist < smoothnessMod)
             {
-                biomeWeights[SeedRandom.Get(gridX + i / 4, gridY + i % 4) % biomesNum] += 1.0f * (smoothnessMod + closestDist - dists[i]) * 
-                                                                                                 (smoothnessMod + closestDist - dists[i]) / total;
+                int val = SeedRandom.Get(gridX + i / 4, gridY + i % 4) % (VoxelData.biomeProbobilitySum);
+
+                for (int j = 0; j < biomes.Length; j++)
+                {
+                    val -= biomes[j].probobilityWeight;
+                    if (val < 0)
+                    {
+                        biomeWeights[j] += 1.0f * (smoothnessMod + closestDist - dists[i]) * (smoothnessMod + closestDist - dists[i]) / total;
+                        break;
+                    }
+                }
             }
         }
 

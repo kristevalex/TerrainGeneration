@@ -27,7 +27,7 @@ public static class Structure
         }
     }
 
-    public static void makeTree(Vector3 pos, Queue<VoxelMod>[,] queue, int minHeight, int maxHeight)
+    public static bool makeTree(Vector3 pos, Queue<VoxelMod>[,] queue, int minHeight, int maxHeight)
     {
         int height = SeedRandom.Get((int)pos.x, (int)pos.y) % (maxHeight - minHeight + 1) + minHeight;
 
@@ -49,5 +49,7 @@ public static class Structure
         pos.z += chunkY * VoxelData.chunkSize;
 
         setBlock((int)pos.x - 2, (int)pos.z - 2, (int)pos.y + height - 4, (int)pos.x + 2, (int)pos.z + 2, (int)pos.y + height, Blocks.leave, queue);
+
+        return true;
     }
 }
