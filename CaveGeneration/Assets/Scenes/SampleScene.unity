@@ -276,7 +276,7 @@ RectTransform:
   m_GameObject: {fileID: 308474832}
   m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.09, y: 1, z: 0.18}
+  m_LocalScale: {x: 0.90000004, y: 1, z: 1.8000001}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -413,18 +413,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7cfe8182f207df4f97f45248df1d0dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 31
-  mapHeight: 60
-  mapWidth: 30
-  noiseScale: 10
+  seed: 348
+  mapHeight: 600
+  mapWidth: 300
+  noiseScale: 142.76
   autoUpdate: 1
   fillAmount: 0.5
   octaves: 3
-  persistance: 0.649
-  lacunarity: 2.93
+  persistance: 0.679
+  lacunarity: 3.14
   smoothIterations: 5
-  wallThresholdSize: 4481
-  caveThresholdSize: 0
+  wallThresholdSize: 75
+  caveThresholdSize: 138
 --- !u!4 &634893149
 Transform:
   m_ObjectHideFlags: 0

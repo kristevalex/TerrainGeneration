@@ -38,6 +38,8 @@ public class MapGenerator : MonoBehaviour
 
     MapDisplay mapDisplay;
 
+    public static List<Point> test;
+
 
     public void GenerateMap()
     {
@@ -53,6 +55,10 @@ public class MapGenerator : MonoBehaviour
 
     void GenerateBaseMap()
     {
+        if (!mapDisplay)
+            mapDisplay = FindObjectOfType<MapDisplay>();
+
+
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity);
 
         map = new bool[mapWidth, mapHeight];
@@ -99,16 +105,27 @@ public class MapGenerator : MonoBehaviour
 
     void DisplayMap()
     {
-        if (!mapDisplay)
-            mapDisplay = FindObjectOfType<MapDisplay>();
-
         Color[] cavesMap = new Color[mapHeight * mapWidth];
         
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                if (map[x, y])
+                if (cavesMap[y * mapWidth + x] == Color.red)
+                    continue;
+
+                if (test.Contains(new Point(x, y)))
+                {
+                    for (int i = x - 1; i <= x + 1; i++)
+                    {
+                        for (int j = y - 1; j <= y + 1; j++)
+                        {
+                            cavesMap[j * mapWidth + i] = Color.red;
+                        }
+                    }
+                    cavesMap[y * mapWidth + x] = Color.green;
+                }
+                else if (map[x, y])
                     cavesMap[y * mapWidth + x] = Color.white;
                 else
                     cavesMap[y * mapWidth + x] = Color.black;
@@ -121,7 +138,6 @@ public class MapGenerator : MonoBehaviour
     void RefineRegions()
     {
         List<List<Point>> wallRegions = GetRegions(false);
-
         foreach (List<Point> wallRegion in wallRegions)
         {
             if (wallRegion.Count < wallThresholdSize)
@@ -134,7 +150,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         List<List<Point>> caveRegions = GetRegions(true);
-
+        List<Room> rooms = new List<Room>();
         foreach (List<Point> caveRegion in caveRegions)
         {
             if (caveRegion.Count < caveThresholdSize)
@@ -144,7 +160,52 @@ public class MapGenerator : MonoBehaviour
                     map[cavePoint.x, cavePoint.y] = false;
                 }
             }
+            else
+            {
+                rooms.Add(new Room(caveRegion, map));
+            }
         }
+
+        ConnectRooms(rooms);
+    }
+
+    void ConnectRooms(List<Room> rooms)
+    {
+        test = new List<Point>();
+
+        Room prev = null;
+        foreach (Room cur in rooms)
+        {
+            if (prev != null)
+                CreateConnection(prev, cur);
+            prev = cur;
+        }
+    }
+
+    void CreateConnection(Room first, Room second)
+    {
+        Room.Connect(first, second);
+
+        Point firstBest = new Point();
+        Point secondBest = new Point();
+
+        int bestDist = int.MaxValue;
+        foreach (Point firstTile in first.edgePoints)
+        {
+            foreach (Point secondTile in second.edgePoints)
+            {
+                int curDist = (firstTile.x - secondTile.x) * (firstTile.x - secondTile.x) + (firstTile.y - secondTile.y) * (firstTile.y - secondTile.y);
+                if (curDist < bestDist)
+                {
+                    bestDist = curDist;
+                    firstBest = firstTile;
+                    secondBest = secondTile;
+                }
+            }
+        }
+
+        test.Add(firstBest);
+        test.Add(secondBest);        
     }
 
     List<List<Point>> GetRegions(bool tileType)
@@ -236,5 +297,46 @@ public struct Point
     {
         x = _x;
         y = _y;
+    }
+}
+
+public class Room
+{
+    public List<Point> points;
+    public List<Point> edgePoints;
+    public List<Room> connected;
+
+    public Room(List<Point> _points, bool[,] map)
+    {
+        points = _points;
+        connected = new List<Room>();
+        edgePoints = new List<Point>();
+        foreach (Point point in points)
+        {
+            for (int i = point.x - 1; i <= point.x + 1; i++)
+            {
+                for (int j = point.y - 1; j <= point.y + 1; j++)
+                {
+                    if (i == point.x || j == point.y)
+                    {
+                        if (map[i, j] == false)
+                        {
+                            edgePoints.Add(point);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void Connect(Room first, Room second)
+    {
+        first.connected.Add(second);
+        second.connected.Add(first);
+    }
+
+    public bool IsConnected(Room other)
+    {
+        return connected.Contains(other);
     }
 }

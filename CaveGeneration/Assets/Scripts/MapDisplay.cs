@@ -4,8 +4,7 @@ public class MapDisplay : MonoBehaviour
 {
     [SerializeField]
     Renderer textureRenderer;
-    [SerializeField]
-    float planeScale;
+    public float planeScale;
     
     public void DrawTexture(Texture2D texture)
     {
