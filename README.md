@@ -7,7 +7,7 @@ By [Alex Kristev](https://github.com/kristevalex)
 
 * [TerrainGeneration](#s-TerrainGeneration)
 * [Minecraft](#s-Minecraft)
-* [CaveGemeration](#s-CaveGemeration)
+* [CaveGeneration](#s-CaveGeneration)
 
 ## <a name="s-TerrainGeneration"></a> TerrainGeneration
 Here you will find basics of terrain generation:
@@ -24,7 +24,7 @@ Here you will find mincraft like terrain with a few biomes affecting generation:
 ![Basic Terrain Samle](pics/MincraftBasicTerrain5.png)
 ![Basic Terrain Samle](pics/MincraftBasicTerrain6.png)
 
-## <a name="s-CaveGemeration"></a> CaveGemeration
+## <a name="s-CaveGeneration"></a> CaveGeneration
 Here you will find basics of cave generation:
 ![Basic Cave Samle](pics/BasicCaves.png)
 ![Basic Cave Samle](pics/BasicCaves2.png)
