@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour
 {
+    [SerializeField]
+    int seed;
+
     [SerializeField]
     int mapHeight;
     [SerializeField]
@@ -22,11 +27,13 @@ public class MapGenerator : MonoBehaviour
     float lacunarity;
 
     [SerializeField]
-    int seed;
-
-    [SerializeField]
     int smoothIterations;
-
+    
+    [SerializeField]
+    int wallThresholdSize;
+    [SerializeField]
+    int caveThresholdSize;
+        
     bool[,] map;
 
     MapDisplay mapDisplay;
@@ -39,7 +46,9 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < smoothIterations; i++)
             SmoothMap();
 
-        DisplayMap();
+        RefineRegions();
+
+        DisplayMap();        
     }
 
     void GenerateBaseMap()
@@ -80,7 +89,7 @@ public class MapGenerator : MonoBehaviour
         int neighboursNum = 0;
         for (int i = x - 1; i <= x + 1; i++)
             for (int j = y - 1; j <= y + 1; j++)
-                if (i >= 0 && j >= 0 && i < mapWidth && j < mapHeight)
+                if (IsInMap(i, j))
                     if (i != x || j != y)
                         if (map[i, j])
                             neighboursNum++;
@@ -109,6 +118,97 @@ public class MapGenerator : MonoBehaviour
         mapDisplay.DrawTexture(TextureGenerator.TextureFromColorMap(cavesMap, mapWidth, mapHeight));
     }
 
+    void RefineRegions()
+    {
+        List<List<Point>> wallRegions = GetRegions(false);
+
+        foreach (List<Point> wallRegion in wallRegions)
+        {
+            if (wallRegion.Count < wallThresholdSize)
+            {
+                foreach (Point wallPoint in wallRegion)
+                {
+                    map[wallPoint.x, wallPoint.y] = true;
+                }
+            }
+        }
+
+        List<List<Point>> caveRegions = GetRegions(true);
+
+        foreach (List<Point> caveRegion in caveRegions)
+        {
+            if (caveRegion.Count < caveThresholdSize)
+            {
+                foreach (Point cavePoint in caveRegion)
+                {
+                    map[cavePoint.x, cavePoint.y] = false;
+                }
+            }
+        }
+    }
+
+    List<List<Point>> GetRegions(bool tileType)
+    {
+        List<List<Point>> regions = new List<List<Point>>();
+        bool[,] mapUsed = new bool[mapWidth, mapHeight];
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                if (mapUsed[x, y] == false && map[x, y] == tileType)
+                {
+                    List<Point> newRegion = GetRegionPoints(x, y);
+                    regions.Add(newRegion);
+
+                    foreach (Point point in newRegion)
+                         mapUsed[point.x, point.y] = true;
+                }
+            }
+        }
+
+        return regions;
+    }
+
+    List<Point> GetRegionPoints(int startX, int startY)
+    {
+        List<Point> points = new List<Point>();
+        bool[,] mapUsed = new bool[mapWidth, mapHeight];
+        bool tileType = map[startX, startY];
+
+        Queue<Point> queue = new Queue<Point>();
+        queue.Enqueue(new Point(startX, startY));
+        mapUsed[startX, startY] = true;
+
+        while (queue.Count > 0)
+        {
+            Point cur = queue.Dequeue();
+            points.Add(cur);
+
+            for (int i = cur.x - 1; i <= cur.x + 1; i++)
+            {
+                for (int j = cur.y - 1; j <= cur.y + 1; j++)
+                {
+                    if (IsInMap(i, j) && (i == cur.x || j == cur.y))
+                    {
+                        if (mapUsed[i, j] == false && map[i, j] == tileType)
+                        {
+                            mapUsed[i, j] = true;
+                            queue.Enqueue(new Point(i, j));
+                        }
+                    }
+                }
+            }
+        }
+
+        return points;
+    }
+
+    bool IsInMap (int x, int y)
+    {
+        return x >= 0 && y >= 0 && x < mapWidth && y < mapHeight;
+    }
+
     private void OnValidate()
     {
         if (mapWidth < 1)
@@ -124,5 +224,17 @@ public class MapGenerator : MonoBehaviour
 
         if (seed < 1)
             seed = 1;
+    }
+}
+
+public struct Point
+{
+    public int x;
+    public int y;
+
+    public Point (int _x, int _y)
+    {
+        x = _x;
+        y = _y;
     }
 }
