@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -27,8 +28,10 @@ public class MapGenerator : MonoBehaviour
     float lacunarity;
 
     [SerializeField]
+    int edgeDistSmoothing;
+    [SerializeField]
     int smoothIterations;
-    
+
     [SerializeField]
     int wallThresholdSize;
     [SerializeField]
@@ -63,13 +66,20 @@ public class MapGenerator : MonoBehaviour
 
         map = new bool[mapWidth, mapHeight];
 
+        System.Random prng = new System.Random(seed);
+
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
                 map[x, y] = noiseMap[x, y] < fillAmount;
-                if (y == 0 || x == 0 || y == mapHeight - 1 || x == mapWidth - 1)
-                    map[x, y] = false;
+
+                for (int i = 0; i < edgeDistSmoothing; i++)
+                {
+                    if (y == i || x == i || y == mapHeight - i - 1 || x == mapWidth - i - 1)
+                        if (prng.Next(0, edgeDistSmoothing) >= i)
+                            map[x, y] = false;
+                }
             }
         }
     }
@@ -173,13 +183,82 @@ public class MapGenerator : MonoBehaviour
     {
         test = new List<Point>();
 
-        Room prev = null;
-        foreach (Room cur in rooms)
+        int[] addedIds = new int[rooms.Count];
+        int added = 0;
+        int addedId = 1;
+
+        Edge[] edges = new Edge[rooms.Count * (rooms.Count - 1) / 2];
+        int cnt = 0;
+        for (int i = 0; i < rooms.Count; i++)
         {
-            if (prev != null)
-                CreateConnection(prev, cur);
-            prev = cur;
+            for (int j = 0; j < i; j++)
+            {
+                edges[cnt] = new Edge(GetDist(rooms[i], rooms[j]), i, j);
+                ++cnt;
+            }
         }
+
+        Array.Sort(edges);
+        for (int i = 0; i < edges.Length; i++)
+        {
+            if (added == rooms.Count)
+                break;
+
+            if (addedIds[edges[i].to] != addedIds[edges[i].from])
+            {
+                Debug.Log("connecting: " + edges[i].to + " " + edges[i].to);
+
+                int oldVal = addedIds[edges[i].to];
+                if (addedIds[edges[i].to] == 0)
+                {
+                    addedIds[edges[i].to] = addedIds[edges[i].from];
+                }
+                if (addedIds[edges[i].from] == 0)
+                {
+                    addedIds[edges[i].from] = addedIds[edges[i].to];
+                }
+                else
+                {
+                    for (int j = 0; j < rooms.Count; j++)
+                    {
+                        if (addedIds[j] == oldVal)
+                        {
+                            addedIds[j] = addedIds[edges[i].from];
+                        }
+                    }
+                }
+
+                added++;
+                CreateConnection(rooms[edges[i].to], rooms[edges[i].from]);
+            }
+            else if (addedIds[edges[i].to] == 0)
+            {
+                addedIds[edges[i].to] = addedId;
+                addedIds[edges[i].from] = addedId;
+                added++;
+                addedId++;
+
+                Debug.Log("connecting: " + edges[i].to + " " + edges[i].to);
+
+                CreateConnection(rooms[edges[i].to], rooms[edges[i].from]);
+            }
+        }
+    }
+
+    int GetDist(Room first, Room second)
+    {
+        int bestDist = int.MaxValue;
+        foreach (Point firstTile in first.edgePoints)
+        {
+            foreach (Point secondTile in second.edgePoints)
+            {
+                int curDist = (firstTile.x - secondTile.x) * (firstTile.x - secondTile.x) + (firstTile.y - secondTile.y) * (firstTile.y - secondTile.y);
+                if (curDist < bestDist)
+                    bestDist = curDist;
+            }
+        }
+
+        return bestDist;
     }
 
     void CreateConnection(Room first, Room second)
@@ -285,6 +364,9 @@ public class MapGenerator : MonoBehaviour
 
         if (seed < 1)
             seed = 1;
+
+        if (edgeDistSmoothing < 1)
+            edgeDistSmoothing = 1;
     }
 }
 
@@ -340,3 +422,29 @@ public class Room
         return connected.Contains(other);
     }
 }
+
+public struct Edge : IComparable
+{
+    public int dist;
+
+    public int from;
+    public int to;
+
+    public Edge (int _dist, int _from, int _to)
+    {
+        dist = _dist;
+        from = _from;
+        to = _to;
+    }
+
+    int IComparable.CompareTo(object other)
+    {
+        Edge edge = (Edge)other;
+
+        if (dist == edge.dist) return 0;
+        if (dist < edge.dist) return -1;
+        if (dist > edge.dist) return 1;
+        return 0;
+    }
+}
+
