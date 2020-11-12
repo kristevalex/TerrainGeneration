@@ -49,11 +49,15 @@ public class MapGenerator : MonoBehaviour
 
     bool[,] map;
 
+    System.Random prng;
+
     MapDisplay mapDisplay;
 
 
     public void GenerateMap()
     {
+        prng = new System.Random(seed);
+
         GenerateBaseMap();
 
         for (int i = 0; i < smoothIterations; i++)
@@ -63,6 +67,8 @@ public class MapGenerator : MonoBehaviour
 
         for (int i = 0; i < smoothIterations; i++)
             SmoothMap();
+
+        RefineRegions();
 
         DisplayMap();        
     }
@@ -77,7 +83,8 @@ public class MapGenerator : MonoBehaviour
 
         map = new bool[mapWidth, mapHeight];
 
-        System.Random prng = new System.Random(seed);
+        if (prng == null)
+            prng = new System.Random(seed);
 
         for (int y = 0; y < mapHeight; y++)
         {
@@ -331,6 +338,9 @@ public class MapGenerator : MonoBehaviour
             {
                 if (x * x + y * y <= r * r)
                 {
+                    if (x * x + y * y > 1 && prng.Next(0, 10) > 3)
+                        continue;
+
                     int drawX = x + point.x;
                     int drawY = y + point.y;
                     if (IsInMap(drawX, drawY))
