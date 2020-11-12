@@ -38,7 +38,15 @@ public class MapGenerator : MonoBehaviour
     int wallThresholdSize;
     [SerializeField]
     int caveThresholdSize;
-        
+    [SerializeField]
+    bool limitConnectionDistance;
+    [SerializeField]
+    int maxConnectionDistance;
+    [SerializeField]
+    bool leaveOnlyBiggest;
+    [SerializeField]
+    int cycles;
+
     bool[,] map;
 
     MapDisplay mapDisplay;
@@ -52,6 +60,9 @@ public class MapGenerator : MonoBehaviour
             SmoothMap();
 
         RefineRegions();
+
+        for (int i = 0; i < smoothIterations; i++)
+            SmoothMap();
 
         DisplayMap();        
     }
@@ -163,6 +174,40 @@ public class MapGenerator : MonoBehaviour
         }
 
         ConnectRooms(rooms);
+
+        if (leaveOnlyBiggest)
+            LeaveBigestRegion();
+    }
+
+    void LeaveBigestRegion()
+    {
+        int maxSize = 0;
+        int maxId = 0;
+
+        List<List<Point>> caveRegions = GetRegions(true);
+        int cnt = 0;
+        foreach (List<Point> caveRegion in caveRegions)
+        {
+            if (caveRegion.Count > maxSize)
+            {
+                maxSize = caveRegion.Count;
+                maxId = cnt;                
+            }
+            ++cnt;
+        }
+
+        cnt = 0;
+        foreach (List<Point> caveRegion in caveRegions)
+        {
+            if (cnt != maxId)
+            {
+                foreach (Point cavePoint in caveRegion)
+                {
+                    map[cavePoint.x, cavePoint.y] = false;
+                }
+            }
+            ++cnt;
+        }
     }
 
     void ConnectRooms(List<Room> rooms)
@@ -186,7 +231,16 @@ public class MapGenerator : MonoBehaviour
 
         for (int i = 0; i < edges.Length; i++)
         {
-            if (added == rooms.Count)
+            if (added >= rooms.Count - 1 + cycles)
+                break;
+            else if (added >= rooms.Count - 1)
+            {
+                ++added;
+                CreateConnection(rooms[edges[i].to], rooms[edges[i].from]);
+                continue;
+            }
+
+            if (limitConnectionDistance && edges[i].dist > maxConnectionDistance * maxConnectionDistance)
                 break;
 
             if (addedIds[edges[i].to] != addedIds[edges[i].from])
