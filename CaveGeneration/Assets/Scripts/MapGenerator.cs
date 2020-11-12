@@ -31,6 +31,8 @@ public class MapGenerator : MonoBehaviour
     int edgeDistSmoothing;
     [SerializeField]
     int smoothIterations;
+    [SerializeField]
+    int lineRadius;
 
     [SerializeField]
     int wallThresholdSize;
@@ -40,8 +42,6 @@ public class MapGenerator : MonoBehaviour
     bool[,] map;
 
     MapDisplay mapDisplay;
-
-    public static List<Point> test;
 
 
     public void GenerateMap()
@@ -121,21 +121,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                if (cavesMap[y * mapWidth + x] == Color.red)
-                    continue;
-
-                if (test.Contains(new Point(x, y)))
-                {
-                    for (int i = x - 1; i <= x + 1; i++)
-                    {
-                        for (int j = y - 1; j <= y + 1; j++)
-                        {
-                            cavesMap[j * mapWidth + i] = Color.red;
-                        }
-                    }
-                    cavesMap[y * mapWidth + x] = Color.green;
-                }
-                else if (map[x, y])
+                if (map[x, y])
                     cavesMap[y * mapWidth + x] = Color.white;
                 else
                     cavesMap[y * mapWidth + x] = Color.black;
@@ -181,8 +167,6 @@ public class MapGenerator : MonoBehaviour
 
     void ConnectRooms(List<Room> rooms)
     {
-        test = new List<Point>();
-
         int[] addedIds = new int[rooms.Count];
         int added = 0;
         int addedId = 1;
@@ -199,6 +183,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         Array.Sort(edges);
+
         for (int i = 0; i < edges.Length; i++)
         {
             if (added == rooms.Count)
@@ -206,14 +191,12 @@ public class MapGenerator : MonoBehaviour
 
             if (addedIds[edges[i].to] != addedIds[edges[i].from])
             {
-                Debug.Log("connecting: " + edges[i].to + " " + edges[i].to);
-
                 int oldVal = addedIds[edges[i].to];
                 if (addedIds[edges[i].to] == 0)
                 {
                     addedIds[edges[i].to] = addedIds[edges[i].from];
                 }
-                if (addedIds[edges[i].from] == 0)
+                else if (addedIds[edges[i].from] == 0)
                 {
                     addedIds[edges[i].from] = addedIds[edges[i].to];
                 }
@@ -227,7 +210,7 @@ public class MapGenerator : MonoBehaviour
                         }
                     }
                 }
-
+              
                 added++;
                 CreateConnection(rooms[edges[i].to], rooms[edges[i].from]);
             }
@@ -237,9 +220,7 @@ public class MapGenerator : MonoBehaviour
                 addedIds[edges[i].from] = addedId;
                 added++;
                 addedId++;
-
-                Debug.Log("connecting: " + edges[i].to + " " + edges[i].to);
-
+              
                 CreateConnection(rooms[edges[i].to], rooms[edges[i].from]);
             }
         }
@@ -283,8 +264,79 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        test.Add(firstBest);
-        test.Add(secondBest);        
+        List<Point> line = GetLine(firstBest, secondBest);
+        foreach (Point linePoint in line)
+            DrawCircle(linePoint, lineRadius);
+    }
+
+    void DrawCircle(Point point, int r)
+    {
+        for (int x = -r; x <= r; x++)
+        {
+            for (int y = -r; y <= r; y++)
+            {
+                if (x * x + y * y <= r * r)
+                {
+                    int drawX = x + point.x;
+                    int drawY = y + point.y;
+                    if (IsInMap(drawX, drawY))
+                        map[drawX, drawY] = true;
+                }
+            }
+        }
+    }
+
+    List<Point> GetLine(Point from, Point to)
+    {
+        List<Point> linePoints = new List<Point>();
+
+        int x = from.x;
+        int y = from.y;
+
+        int dx = to.x - x;
+        int dy = to.y - y;
+
+        bool inverted = false;
+        int step = Math.Sign(dx);
+        int gradientStep = Math.Sign(dy);
+
+        int longest = Math.Abs(dx);
+        int shortest = Math.Abs(dy);
+
+        if (longest < shortest)
+        {
+            inverted = true;
+
+            longest = Math.Abs(dy);
+            shortest = Math.Abs(dx);
+
+            step = Math.Sign(dy);
+            gradientStep = Math.Sign(dx);
+        }
+
+        int gradientAccumulation = longest / 2;
+        for (int i = 0; i < longest; i++)
+        {
+            linePoints.Add(new Point(x, y));
+
+            if (inverted)
+                y += step;
+            else
+                x += step;
+
+            gradientAccumulation += shortest;
+            if (gradientAccumulation >= longest)
+            {
+                if (inverted)
+                    x += gradientStep;
+                else
+                    y += gradientStep;
+
+                gradientAccumulation -= longest;
+            }
+        }
+
+        return linePoints;
     }
 
     List<List<Point>> GetRegions(bool tileType)
