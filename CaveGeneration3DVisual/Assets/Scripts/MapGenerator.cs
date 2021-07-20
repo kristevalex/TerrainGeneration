@@ -13,7 +13,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     int mapWidth;
     [SerializeField]
-    int squareSize;
+    float squareSize;
     [SerializeField]
     float noiseScale;
     public bool autoUpdate;
@@ -62,11 +62,6 @@ public class MapGenerator : MonoBehaviour
         prng = new System.Random(seed);
 
         GenerateBaseMap();
-
-        for (int i = 0; i < smoothIterations; i++)
-            SmoothMap();
-
-        RefineRegions();
 
         for (int i = 0; i < smoothIterations; i++)
             SmoothMap();
