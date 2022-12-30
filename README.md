@@ -3,6 +3,8 @@ Procedural terrain generation in unity
 
 By [Alex Kristev](https://github.com/kristevalex)  
 
+Video explanation for biome generaion [https://www.youtube.com/watch?v=D9_FB6hWnME](https://www.youtube.com/watch?v=D9_FB6hWnME)
+
 ## Folders in repository
 
 * [TerrainGeneration](#s-TerrainGeneration)
